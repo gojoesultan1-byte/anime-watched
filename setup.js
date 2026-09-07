@@ -1,12 +1,20 @@
 require("dotenv").config();
 
-const bcrypt = require("bcryptjs");
-
 const {
+    db,
     getUserById,
     getUserByEmail,
     createUser
 } = require("./database");
+
+const {
+    hashPassword
+} = require("./auth");
+
+
+/* =========================================
+   OWNER CONFIGURATION
+========================================= */
 
 const OWNER_ID = 111111111;
 
@@ -16,115 +24,214 @@ const OWNER_EMAIL =
 const OWNER_PASSWORD =
     process.env.OWNER_PASSWORD;
 
-async function setupOwner() {
+const OWNER_USERNAME =
+    process.env.OWNER_USERNAME ||
+    "Gojo Esultan";
 
-    if (!OWNER_EMAIL) {
-        console.error(
-            "OWNER_EMAIL is missing."
-        );
-        process.exit(1);
-    }
 
-    if (!OWNER_PASSWORD) {
-        console.error(
-            "OWNER_PASSWORD is missing."
-        );
-        process.exit(1);
-    }
+/* =========================================
+   VALIDATE ENVIRONMENT
+========================================= */
 
-    const existingById =
-        getUserById(
-            OWNER_ID
-        );
+if (
+    !OWNER_EMAIL ||
+    !OWNER_PASSWORD
+) {
 
-    if (existingById) {
-
-        console.log(
-            "Owner account already exists."
-        );
-
-        console.log(
-            `Owner ID: ${OWNER_ID}`
-        );
-
-        return;
-    }
-
-    const existingByEmail =
-        getUserByEmail(
-            OWNER_EMAIL
-        );
-
-    if (existingByEmail) {
-
-        console.error(
-            "This email is already registered."
-        );
-
-        process.exit(1);
-    }
-
-    const passwordHash =
-        await bcrypt.hash(
-            OWNER_PASSWORD,
-            12
-        );
-
-    const owner =
-        createUser({
-            username:
-                "Gojo Esultan",
-
-            email:
-                OWNER_EMAIL,
-
-            passwordHash,
-
-            role:
-                "owner"
-        });
-
-    console.log(
-        "================================"
+    console.error(
+        "OWNER_EMAIL and OWNER_PASSWORD are required."
     );
 
-    console.log(
-        "OWNER ACCOUNT CREATED"
-    );
+    process.exit(1);
 
-    console.log(
-        "================================"
-    );
-
-    console.log(
-        `ID: ${owner.id}`
-    );
-
-    console.log(
-        `Email: ${owner.email}`
-    );
-
-    console.log(
-        `Role: ${owner.role}`
-    );
-
-    console.log(
-        "Password stored as a secure hash."
-    );
-
-    console.log(
-        "================================"
-    );
 }
 
-setupOwner()
-    .catch(error => {
+
+/* =========================================
+   CHECK OWNER ID
+========================================= */
+
+const ownerById =
+    getUserById(
+        OWNER_ID
+    );
+
+
+/* =========================================
+   CHECK OWNER EMAIL
+========================================= */
+
+const ownerByEmail =
+    getUserByEmail(
+        OWNER_EMAIL
+    );
+
+
+/* =========================================
+   PREVENT ACCOUNT CONFLICT
+========================================= */
+
+if (
+    ownerByEmail &&
+    Number(ownerByEmail.id) !== OWNER_ID
+) {
+
+    console.error(
+        "The owner email is already assigned to another account."
+    );
+
+    process.exit(1);
+
+}
+
+
+/* =========================================
+   CREATE OWNER
+========================================= */
+
+async function setupOwner() {
+
+    try {
+
+        const passwordHash =
+            await hashPassword(
+                OWNER_PASSWORD
+            );
+
+
+        if (!ownerById) {
+
+            createUser({
+
+                id:
+                    OWNER_ID,
+
+                username:
+                    OWNER_USERNAME,
+
+                email:
+                    OWNER_EMAIL,
+
+                passwordHash,
+
+                role:
+                    "owner"
+
+            });
+
+
+            console.log(
+                "Owner account created successfully."
+            );
+
+        } else {
+
+            /*
+             * Make sure the reserved owner
+             * account always has owner privileges.
+             */
+
+            db.prepare(`
+                UPDATE users
+
+                SET
+                    email = ?,
+                    username = ?,
+                    password_hash = ?,
+                    role = 'owner',
+                    is_active = 1
+
+                WHERE id = ?
+            `)
+            .run(
+
+                OWNER_EMAIL,
+
+                OWNER_USERNAME,
+
+                passwordHash,
+
+                OWNER_ID
+
+            );
+
+
+            console.log(
+                "Owner account updated successfully."
+            );
+
+        }
+
+
+        /* =====================================
+           VERIFY OWNER
+        ===================================== */
+
+        const owner =
+            getUserById(
+                OWNER_ID
+            );
+
+
+        if (
+            !owner ||
+            Number(owner.id) !== OWNER_ID ||
+            owner.role !== "owner"
+        ) {
+
+            throw new Error(
+                "Owner verification failed."
+            );
+
+        }
+
+
+        console.log(
+            "================================"
+        );
+
+        console.log(
+            "ANIME WORLD OWNER"
+        );
+
+        console.log(
+            "================================"
+        );
+
+        console.log(
+            `ID: ${owner.id}`
+        );
+
+        console.log(
+            `Email: ${owner.email}`
+        );
+
+        console.log(
+            `Role: ${owner.role}`
+        );
+
+        console.log(
+            "================================"
+        );
+
+
+        process.exit(0);
+
+    } catch (error) {
 
         console.error(
-            "SETUP ERROR:",
-            error
+            "OWNER SETUP ERROR:"
+        );
+
+        console.error(
+            error.message
         );
 
         process.exit(1);
 
-    });
+    }
+
+}
+
+
+setupOwner();
