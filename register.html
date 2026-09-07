@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>إنشاء حساب - Anime World</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    min-height:100vh;
+    font-family:Arial,Tahoma,sans-serif;
+
+    background:
+    radial-gradient(
+        circle at top,
+        #263b72 0%,
+        #10162c 42%,
+        #070a14 100%
+    );
+
+    color:#fff;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+}
+
+.page{
+    width:100%;
+    max-width:480px;
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:24px;
+}
+
+.logo-icon{
+    width:76px;
+    height:76px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+    linear-gradient(
+        145deg,
+        #657fff,
+        #18244f
+    );
+
+    box-shadow:
+    0 0 35px
+    rgba(92,124,255,.45);
+
+    font-size:28px;
+    font-weight:bold;
+}
+
+.logo h1{
+    margin-top:13px;
+    font-size:28px;
+}
+
+.logo p{
+    margin-top:6px;
+    color:#aeb8d6;
+    font-size:14px;
+}
+
+.card{
+    width:100%;
+
+    padding:30px;
+
+    border-radius:22px;
+
+    background:
+    rgba(15,20,40,.94);
+
+    border:
+    1px solid
+    rgba(255,255,255,.08);
+
+    box-shadow:
+    0 25px 70px
+    rgba(0,0,0,.45);
+
+    backdrop-filter:blur(15px);
+}
+
+.card h2{
+    text-align:center;
+    font-size:24px;
+    margin-bottom:8px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#929dbd;
+    font-size:14px;
+    margin-bottom:25px;
+}
+
+.field{
+    margin-bottom:17px;
+}
+
+.field label{
+    display:block;
+    margin-bottom:8px;
+    font-size:14px;
+    color:#dce2f4;
+}
+
+.field input{
+    width:100%;
+    height:51px;
+
+    border-radius:13px;
+
+    border:
+    1px solid
+    rgba(255,255,255,.1);
+
+    outline:none;
+
+    background:
+    rgba(255,255,255,.05);
+
+    color:#fff;
+
+    padding:0 15px;
+
+    font-size:15px;
+
+    transition:.2s;
+}
+
+.field input:focus{
+    border-color:#657fff;
+
+    box-shadow:
+    0 0 0 3px
+    rgba(92,124,255,.12);
+}
+
+.field input::placeholder{
+    color:#69738f;
+}
+
+.password-box{
+    position:relative;
+}
+
+.password-box input{
+    padding-left:65px;
+}
+
+.toggle{
+    position:absolute;
+
+    left:12px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    border:none;
+
+    background:transparent;
+
+    color:#9ca8c7;
+
+    cursor:pointer;
+
+    font-size:12px;
+}
+
+.rules{
+    margin:
+    -5px 0 18px;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    background:
+    rgba(255,255,255,.035);
+
+    color:#7f8ba9;
+
+    font-size:12px;
+
+    line-height:1.8;
+}
+
+.rules div{
+    transition:.2s;
+}
+
+.rules .valid{
+    color:#7ee6a7;
+}
+
+.rules .invalid{
+    color:#a3aac0;
+}
+
+.agreement{
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:9px;
+
+    color:#858faa;
+
+    font-size:12px;
+
+    line-height:1.7;
+
+    margin-bottom:20px;
+}
+
+.agreement input{
+    width:16px;
+    height:16px;
+
+    margin-top:2px;
+}
+
+.agreement a{
+    color:#7690ff;
+    text-decoration:none;
+}
+
+.register-btn{
+    width:100%;
+
+    height:54px;
+
+    border:none;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    color:#fff;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    background:
+    linear-gradient(
+        135deg,
+        #657fff,
+        #4057db
+    );
+
+    box-shadow:
+    0 10px 30px
+    rgba(65,87,219,.25);
+
+    transition:.2s;
+}
+
+.register-btn:hover{
+    transform:translateY(-2px);
+}
+
+.register-btn:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+    transform:none;
+}
+
+.message{
+    display:none;
+
+    margin-bottom:18px;
+
+    padding:12px 14px;
+
+    border-radius:12px;
+
+    font-size:13px;
+
+    line-height:1.6;
+
+    text-align:center;
+}
+
+.message.error{
+    display:block;
+
+    background:
+    rgba(255,70,70,.1);
+
+    border:
+    1px solid
+    rgba(255,70,70,.25);
+
+    color:#ff9d9d;
+}
+
+.message.success{
+    display:block;
+
+    background:
+    rgba(60,220,130,.1);
+
+    border:
+    1px solid
+    rgba(60,220,130,.25);
+
+    color:#8df0b4;
+}
+
+.login{
+    text-align:center;
+
+    margin-top:21px;
+
+    color:#858faa;
+
+    font-size:14px;
+}
+
+.login a{
+    color:#7690ff;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.back{
+    display:block;
+
+    text-align:center;
+
+    margin-top:18px;
+
+    color:#707b9a;
+
+    text-decoration:none;
+
+    font-size:13px;
+}
+
+.spinner{
+    display:none;
+
+    width:18px;
+    height:18px;
+
+    border:
+    2px solid
+    rgba(255,255,255,.35);
+
+    border-top-color:#fff;
+
+    border-radius:50%;
+
+    animation:
+    spin .7s linear infinite;
+
+    vertical-align:middle;
+}
+
+.loading .spinner{
+    display:inline-block;
+}
+
+@keyframes spin{
+
+    to{
+        transform:rotate(360deg);
+    }
+
+}
+
+@media(max-width:480px){
+
+    body{
+        padding:14px;
+    }
+
+    .card{
+        padding:23px 18px;
+    }
+
+    .logo h1{
+        font-size:25px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<main class="page">
+
+    <section class="logo">
+
+        <div class="logo-icon">
+            AW
+        </div>
+
+        <h1>
+            Anime World
+        </h1>
+
+        <p>
+            انضم إلى عالم الأنمي
+        </p>
+
+    </section>
+
+
+    <section class="card">
+
+        <h2>
+            إنشاء حساب
+        </h2>
+
+        <p class="subtitle">
+            أنشئ حسابك وابدأ رحلتك
+        </p>
+
+
+        <div
+            id="message"
+            class="message"
+        ></div>
+
+
+        <form
+            id="registerForm"
+            autocomplete="on"
+        >
+
+
+            <div class="field">
+
+                <label for="username">
+                    اسم المستخدم
+                </label>
+
+                <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    placeholder="اكتب اسم المستخدم"
+                    minlength="3"
+                    maxlength="30"
+                    autocomplete="username"
+                    required
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="email">
+                    البريد الإلكتروني
+                </label>
+
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="example@email.com"
+                    maxlength="150"
+                    autocomplete="email"
+                    required
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="password">
+                    كلمة المرور
+                </label>
+
+                <div class="password-box">
+
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        placeholder="أنشئ كلمة مرور قوية"
+                        minlength="8"
+                        maxlength="100"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle"
+                        id="togglePassword"
+                    >
+                        إظهار
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="rules"
+                id="rules"
+            >
+
+                <div id="ruleLength">
+                    • 8 أحرف على الأقل
+                </div>
+
+                <div id="ruleLetter">
+                    • تحتوي على حرف
+                </div>
+
+                <div id="ruleNumber">
+                    • تحتوي على رقم
+                </div>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="confirmPassword">
+                    تأكيد كلمة المرور
+                </label>
+
+                <div class="password-box">
+
+                    <input
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type="password"
+                        placeholder="أعد كتابة كلمة المرور"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle"
+                        id="toggleConfirm"
+                    >
+                        إظهار
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <label class="agreement">
+
+                <input
+                    type="checkbox"
+                    id="agreement"
+                    required
+                >
+
+                <span>
+                    أوافق على شروط استخدام الموقع
+                    وسياسة الخصوصية.
+                </span>
+
+            </label>
+
+
+            <button
+                type="submit"
+                class="register-btn"
+                id="registerButton"
+            >
+
+                <span id="buttonText">
+                    إنشاء الحساب
+                </span>
+
+                <span
+                    id="loading"
+                    class="loading"
+                >
+                    <span class="spinner"></span>
+                </span>
+
+            </button>
+
+
+        </form>
+
+
+        <div class="login">
+
+            لديك حساب بالفعل؟
+
+            <a href="login.html">
+                تسجيل الدخول
+            </a>
+
+        </div>
+
+
+        <a
+            href="index.html"
+            class="back"
+        >
+            ← العودة إلى الموقع
+        </a>
+
+    </section>
+
+</main>
+
+
+<script>
+
+const form =
+    document.getElementById(
+        "registerForm"
+    );
+
+
+const username =
+    document.getElementById(
+        "username"
+    );
+
+
+const email =
+    document.getElementById(
+        "email"
+    );
+
+
+const password =
+    document.getElementById(
+        "password"
+    );
+
+
+const confirmPassword =
+    document.getElementById(
+        "confirmPassword"
+    );
+
+
+const agreement =
+    document.getElementById(
+        "agreement"
+    );
+
+
+const message =
+    document.getElementById(
+        "message"
+    );
+
+
+const button =
+    document.getElementById(
+        "registerButton"
+    );
+
+
+const buttonText =
+    document.getElementById(
+        "buttonText"
+    );
+
+
+const loading =
+    document.getElementById(
+        "loading"
+    );
+
+
+const togglePassword =
+    document.getElementById(
+        "togglePassword"
+    );
+
+
+const toggleConfirm =
+    document.getElementById(
+        "toggleConfirm"
+    );
+
+
+const ruleLength =
+    document.getElementById(
+        "ruleLength"
+    );
+
+
+const ruleLetter =
+    document.getElementById(
+        "ruleLetter"
+    );
+
+
+const ruleNumber =
+    document.getElementById(
+        "ruleNumber"
+    );
+
+
+/*
+ * PASSWORD VISIBILITY
+ */
+
+togglePassword.addEventListener(
+    "click",
+    () => {
+
+        const hidden =
+            password.type ===
+            "password";
+
+        password.type =
+            hidden
+                ? "text"
+                : "password";
+
+        togglePassword.textContent =
+            hidden
+                ? "إخفاء"
+                : "إظهار";
+
+    }
+);
+
+
+toggleConfirm.addEventListener(
+    "click",
+    () => {
+
+        const hidden =
+            confirmPassword.type ===
+            "password";
+
+        confirmPassword.type =
+            hidden
+                ? "text"
+                : "password";
+
+        toggleConfirm.textContent =
+            hidden
+                ? "إخفاء"
+                : "إظهار";
+
+    }
+);
+
+
+/*
+ * PASSWORD RULES
+ */
+
+password.addEventListener(
+    "input",
+    () => {
+
+        const value =
+            password.value;
+
+
+        const lengthValid =
+            value.length >= 8;
+
+        const letterValid =
+            /[A-Za-z\u0600-\u06FF]/.test(
+                value
+            );
+
+        const numberValid =
+            /\d/.test(
+                value
+            );
+
+
+        ruleLength.className =
+            lengthValid
+                ? "valid"
+                : "invalid";
+
+
+        ruleLetter.className =
+            letterValid
+                ? "valid"
+                : "invalid";
+
+
+        ruleNumber.className =
+            numberValid
+                ? "valid"
+                : "invalid";
+
+    }
+);
+
+
+/*
+ * MESSAGE
+ */
+
+function showMessage(
+    text,
+    type
+){
+
+    message.textContent =
+        text;
+
+    message.className =
+        "message " +
+        type;
+
+}
+
+
+function clearMessage(){
+
+    message.textContent =
+        "";
+
+    message.className =
+        "message";
+
+}
+
+
+/*
+ * LOADING
+ */
+
+function setLoading(
+    state
+){
+
+    button.disabled =
+        state;
+
+    if(state){
+
+        buttonText.style.display =
+            "none";
+
+        loading.classList.add(
+            "loading"
+        );
+
+    }else{
+
+        buttonText.style.display =
+            "inline";
+
+        loading.classList.remove(
+            "loading"
+        );
+
+    }
+
+}
+
+
+/*
+ * VALIDATE
+ */
+
+function validateForm(){
+
+    const name =
+        username.value.trim();
+
+
+    const mail =
+        email.value.trim();
+
+
+    const pass =
+        password.value;
+
+
+    const confirm =
+        confirmPassword.value;
+
+
+    if(
+        name.length < 3
+    ){
+
+        showMessage(
+            "اسم المستخدم يجب أن يكون 3 أحرف على الأقل.",
+            "error"
+        );
+
+        return false;
+    }
+
+
+    if(
+        name.length > 30
+    ){
+
+        showMessage(
+            "اسم المستخدم طويل جدًا.",
+            "error"
+        );
+
+        return false;
+    }
+
+
+    if(
+        !/^[A-Za-z0-9_\u0600-\u06FF ]+$/
+            .test(name)
+    ){
+
+        showMessage(
+            "اسم المستخدم يحتوي على رموز غير مسموحة.",
+            "error"
+        );
+
+        return false;
+    }
+
+
+    if(
+        !mail ||
+        !mail.includes("@")
+    ){
+
+        showMessage(
+            "اكتب بريدًا إلكترونيًا صحيحًا.",
+            "error"
+        );
+
+        return false;
+    }
+
+
+    if(
+        pass.length < 8
+    ){
+
+        showMessage(
+            "كلمة المرور يجب أن تكون 8 أحرف على الأقل.",
+            "error"
+        );
+
+        return false;
+    }
+
+
+    if(
+        !/[A-Za-z\u0600-\u06FF]/.test(pass)
+    ){
+
+        showMessage(
+            "كلمة المرور يجب أن تحتوي على حرف.",
+            "error"
+        );
+
+        return false;
+    }
+
+
+    if(
+        !/\d/.test(pass)
+    ){
+
+        showMessage(
+            "كلمة المرور يجب أن تحتوي على رقم.",
+            "error"
+        );
+
+        return false;
+    }
+
+
+    if(
+        pass !== confirm
+    ){
+
+        showMessage(
+            "كلمتا المرور غير متطابقتين.",
+            "error"
+        );
+
+        return false;
+    }
+
+
+    if(
+        !agreement.checked
+    ){
+
+        showMessage(
+            "يجب الموافقة على شروط الاستخدام.",
+            "error"
+        );
+
+        return false;
+    }
+
+
+    return true;
+}
+
+
+/*
+ * REGISTER
+ */
+
+form.addEventListener(
+    "submit",
+    async event => {
+
+        event.preventDefault();
+
+        clearMessage();
+
+
+        if(
+            !validateForm()
+        ){
+
+            return;
+        }
+
+
+        setLoading(true);
+
+
+        try{
+
+            const response =
+                await fetch(
+                    "/api/auth/register",
+                    {
+                        method:
+                            "POST",
+
+                        headers:{
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                username:
+                                    username.value
+                                    .trim(),
+
+                                email:
+                                    email.value
+                                    .trim()
+                                    .toLowerCase(),
+
+                                password:
+                                    password.value
+
+                            })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if(
+                !response.ok
+            ){
+
+                throw new Error(
+                    data.message ||
+                    "فشل إنشاء الحساب."
+                );
+
+            }
+
+
+            showMessage(
+                "تم إنشاء حسابك بنجاح! رقم عضويتك: " +
+                data.user.id,
+                "success"
+            );
+
+
+            /*
+             * SAVE TOKEN
+             */
+
+            if(
+                data.token
+            ){
+
+                localStorage.setItem(
+                    "anime_world_token",
+                    data.token
+                );
+
+
+                localStorage.setItem(
+                    "anime_world_user",
+                    JSON.stringify(
+                        data.user
+                    )
+                );
+
+            }
+
+
+            form.reset();
+
+
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "index.html";
+
+                },
+                1800
+            );
+
+
+        }catch(error){
+
+            showMessage(
+                error.message ||
+                "حدث خطأ أثناء إنشاء الحساب.",
+                "error"
+            );
+
+            setLoading(false);
+
+        }
+
+    }
+);
+
+
+/*
+ * CLEAR ERRORS
+ */
+
+username.addEventListener(
+    "input",
+    clearMessage
+);
+
+email.addEventListener(
+    "input",
+    clearMessage
+);
+
+password.addEventListener(
+    "input",
+    clearMessage
+);
+
+confirmPassword.addEventListener(
+    "input",
+    clearMessage
+);
+
+agreement.addEventListener(
+    "change",
+    clearMessage
+);
+
+</script>
+
+</body>
+
+</html>
