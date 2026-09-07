@@ -1,0 +1,3146 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#07070b">
+<title>Anime World</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+background:#07070b;
+color:#fff;
+font-family:Arial,Tahoma,sans-serif;
+min-height:100vh;
+overflow-x:hidden
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+.hidden{display:none!important}
+
+:root{
+--bg:#07070b;
+--bg2:#0d0d13;
+--card:#12121a;
+--card2:#181821;
+--border:rgba(255,255,255,.08);
+--text:#fff;
+--muted:#9999a8;
+--primary:#7c3aed;
+--primary2:#a855f7;
+--danger:#ef4444;
+--success:#22c55e;
+--warning:#f59e0b;
+--radius:18px
+}
+
+/* HEADER */
+
+.header{
+height:70px;
+position:fixed;
+top:0;
+right:0;
+left:0;
+z-index:1000;
+display:flex;
+align-items:center;
+gap:15px;
+padding:0 20px;
+background:rgba(7,7,11,.88);
+border-bottom:1px solid var(--border);
+backdrop-filter:blur(20px)
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:10px;
+font-size:20px;
+font-weight:900;
+min-width:180px
+}
+
+.logo-icon{
+width:42px;
+height:42px;
+border-radius:13px;
+display:grid;
+place-items:center;
+font-size:22px;
+background:linear-gradient(135deg,var(--primary),var(--primary2));
+box-shadow:0 0 30px rgba(124,58,237,.3)
+}
+
+.logo-text{
+background:linear-gradient(90deg,#fff,#c084fc);
+-webkit-background-clip:text;
+color:transparent
+}
+
+.search{
+height:44px;
+max-width:650px;
+width:100%;
+margin:auto;
+position:relative
+}
+
+.search input{
+width:100%;
+height:100%;
+border:1px solid var(--border);
+outline:none;
+border-radius:14px;
+background:rgba(255,255,255,.05);
+color:#fff;
+padding:0 45px 0 15px;
+transition:.2s
+}
+
+.search input:focus{
+border-color:var(--primary2);
+box-shadow:0 0 0 4px rgba(124,58,237,.1)
+}
+
+.search-icon{
+position:absolute;
+right:15px;
+top:50%;
+transform:translateY(-50%);
+color:var(--muted)
+}
+
+.header-actions{
+display:flex;
+gap:8px;
+align-items:center
+}
+
+.icon-btn{
+width:43px;
+height:43px;
+border-radius:13px;
+border:1px solid var(--border);
+background:rgba(255,255,255,.05);
+color:#fff
+}
+
+.icon-btn:hover{
+background:rgba(255,255,255,.1)
+}
+
+.login-btn{
+height:43px;
+padding:0 18px;
+border:0;
+border-radius:13px;
+color:#fff;
+font-weight:800;
+background:linear-gradient(135deg,var(--primary),var(--primary2))
+}
+
+/* LAYOUT */
+
+.layout{
+display:grid;
+grid-template-columns:245px minmax(0,1fr);
+max-width:1550px;
+margin:auto;
+padding-top:70px
+}
+
+.sidebar{
+position:fixed;
+top:70px;
+right:calc((100vw - min(1550px,100vw))/2);
+width:245px;
+height:calc(100vh - 70px);
+padding:18px 12px;
+border-left:1px solid var(--border);
+overflow-y:auto
+}
+
+.sidebar-title{
+font-size:11px;
+color:var(--muted);
+font-weight:800;
+padding:8px 12px;
+margin-top:5px
+}
+
+.nav-item{
+width:100%;
+height:47px;
+border:0;
+border-radius:13px;
+background:transparent;
+color:#c9c9d2;
+display:flex;
+align-items:center;
+gap:12px;
+padding:0 13px;
+margin-bottom:4px;
+text-align:right
+}
+
+.nav-item:hover{
+background:rgba(255,255,255,.05);
+color:#fff
+}
+
+.nav-item.active{
+background:rgba(124,58,237,.15);
+color:#fff;
+box-shadow:inset -3px 0 var(--primary2)
+}
+
+.nav-icon{
+width:25px;
+text-align:center;
+font-size:18px
+}
+
+.divider{
+height:1px;
+background:var(--border);
+margin:17px 5px
+}
+
+/* MAIN */
+
+.main{
+grid-column:2;
+padding:22px;
+min-width:0
+}
+
+/* HERO */
+
+.hero{
+min-height:360px;
+position:relative;
+overflow:hidden;
+border:1px solid var(--border);
+border-radius:25px;
+background:
+linear-gradient(90deg,
+rgba(7,7,11,.98),
+rgba(7,7,11,.75),
+rgba(7,7,11,.2)),
+url("https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1800&q=85")
+center/cover;
+margin-bottom:25px
+}
+
+.hero-content{
+padding:60px 45px;
+max-width:680px
+}
+
+.badge{
+display:inline-flex;
+padding:7px 11px;
+border-radius:999px;
+background:rgba(124,58,237,.18);
+border:1px solid rgba(168,85,247,.25);
+color:#d8b4fe;
+font-size:12px;
+font-weight:800;
+margin-bottom:16px
+}
+
+.hero h1{
+font-size:clamp(35px,5vw,65px);
+line-height:1;
+margin-bottom:18px
+}
+
+.hero p{
+color:#c4c4cd;
+line-height:1.9;
+font-size:15px;
+margin-bottom:23px
+}
+
+.hero-buttons{
+display:flex;
+gap:9px;
+flex-wrap:wrap
+}
+
+.primary{
+height:46px;
+padding:0 20px;
+border:0;
+border-radius:13px;
+background:linear-gradient(135deg,var(--primary),var(--primary2));
+color:#fff;
+font-weight:900
+}
+
+.secondary{
+height:46px;
+padding:0 20px;
+border:1px solid var(--border);
+border-radius:13px;
+background:rgba(255,255,255,.07);
+color:#fff;
+font-weight:800
+}
+
+/* SECTION */
+
+.section{
+margin-bottom:30px
+}
+
+.section-header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+margin-bottom:15px
+}
+
+.section-title{
+font-size:21px;
+font-weight:900
+}
+
+.section-subtitle{
+color:var(--muted);
+font-size:12px;
+margin-top:4px
+}
+
+.view-all{
+border:0;
+background:none;
+color:#c084fc;
+font-size:13px;
+font-weight:800
+}
+
+/* CATEGORIES */
+
+.categories{
+display:flex;
+gap:8px;
+overflow-x:auto;
+padding-bottom:5px;
+scrollbar-width:none
+}
+
+.categories::-webkit-scrollbar{
+display:none
+}
+
+.category{
+flex:0 0 auto;
+height:40px;
+padding:0 17px;
+border:1px solid var(--border);
+border-radius:999px;
+background:rgba(255,255,255,.04);
+color:#ccc;
+font-size:12px;
+font-weight:800
+}
+
+.category.active{
+border-color:transparent;
+background:linear-gradient(135deg,var(--primary),var(--primary2));
+color:#fff
+}
+
+/* CARDS */
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+gap:15px
+}
+
+.card{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:18px;
+overflow:hidden;
+transition:.25s
+}
+
+.card:hover{
+transform:translateY(-4px);
+border-color:rgba(168,85,247,.3)
+}
+
+.media{
+aspect-ratio:16/10;
+position:relative;
+background:#000;
+overflow:hidden
+}
+
+.media img{
+width:100%;
+height:100%;
+object-fit:cover
+}
+
+.media::after{
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(to top,rgba(0,0,0,.65),transparent 55%);
+pointer-events:none
+}
+
+.media-type{
+position:absolute;
+z-index:2;
+top:10px;
+right:10px;
+padding:6px 9px;
+border-radius:8px;
+background:rgba(0,0,0,.65);
+font-size:10px;
+font-weight:800
+}
+
+.play{
+position:absolute;
+z-index:3;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:52px;
+height:52px;
+border-radius:50%;
+display:grid;
+place-items:center;
+background:rgba(0,0,0,.55);
+border:1px solid rgba(255,255,255,.2);
+font-size:20px
+}
+
+.card-body{
+padding:12px
+}
+
+.card-title{
+font-size:14px;
+font-weight:850;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis
+}
+
+.card-meta{
+display:flex;
+gap:9px;
+color:var(--muted);
+font-size:11px;
+margin-top:7px
+}
+
+.card-actions{
+display:grid;
+grid-template-columns:1fr 1fr 42px;
+gap:5px;
+margin-top:11px
+}
+
+.action{
+height:35px;
+border:1px solid var(--border);
+border-radius:10px;
+background:rgba(255,255,255,.035);
+color:#bbb;
+font-size:11px
+}
+
+.action:hover{
+color:#fff;
+background:rgba(255,255,255,.08)
+}
+
+.action.liked{
+color:#fb7185;
+background:rgba(244,63,94,.08)
+}
+
+.action.saved{
+color:#c084fc;
+background:rgba(124,58,237,.1)
+}
+
+/* FEED */
+
+.feed{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:20px;
+overflow:hidden;
+margin-bottom:18px
+}
+
+.feed-header{
+display:flex;
+align-items:center;
+gap:10px;
+padding:14px
+}
+
+.avatar{
+width:43px;
+height:43px;
+border-radius:50%;
+display:grid;
+place-items:center;
+background:linear-gradient(135deg,#6d28d9,#c084fc);
+font-weight:900
+}
+
+.user-info{
+flex:1
+}
+
+.user-info strong{
+font-size:14px;
+display:block
+}
+
+.user-info small{
+font-size:10px;
+color:var(--muted)
+}
+
+.more{
+width:38px;
+height:38px;
+border:0;
+border-radius:11px;
+background:transparent;
+color:#aaa;
+font-size:20px
+}
+
+.feed-text{
+padding:0 15px 14px;
+color:#ddd;
+line-height:1.8;
+font-size:14px
+}
+
+.feed-image{
+width:100%;
+max-height:700px;
+object-fit:cover
+}
+
+.feed-stats{
+display:flex;
+justify-content:space-between;
+padding:12px 15px 8px;
+color:var(--muted);
+font-size:11px
+}
+
+.feed-actions{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:6px;
+padding:0 15px 15px
+}
+
+.feed-action{
+height:42px;
+border:1px solid var(--border);
+border-radius:11px;
+background:rgba(255,255,255,.035);
+color:#bbb;
+font-weight:700
+}
+
+.feed-action.liked{
+color:#fb7185
+}
+
+/* MODAL */
+
+.modal{
+position:fixed;
+inset:0;
+z-index:3000;
+display:none;
+place-items:center;
+padding:20px;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(10px)
+}
+
+.modal.open{
+display:grid
+}
+
+.modal-box{
+width:min(440px,100%);
+max-height:90vh;
+overflow:auto;
+padding:25px;
+border:1px solid var(--border);
+border-radius:23px;
+background:#111119;
+box-shadow:0 30px 100px rgba(0,0,0,.6)
+}
+
+.modal-head{
+display:flex;
+align-items:center;
+justify-content:space-between;
+margin-bottom:22px
+}
+
+.modal-title{
+font-size:23px;
+font-weight:900
+}
+
+.close{
+width:39px;
+height:39px;
+border:0;
+border-radius:11px;
+background:rgba(255,255,255,.06);
+color:#fff;
+font-size:22px
+}
+
+.form-group{
+margin-bottom:14px
+}
+
+.form-group label{
+display:block;
+font-size:12px;
+font-weight:800;
+color:#ccc;
+margin-bottom:7px
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+width:100%;
+border:1px solid var(--border);
+border-radius:12px;
+background:rgba(255,255,255,.05);
+color:#fff;
+outline:none;
+padding:12px
+}
+
+.form-group input{
+height:45px
+}
+
+.form-group textarea{
+min-height:100px;
+resize:vertical
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{
+border-color:var(--primary2)
+}
+
+.submit{
+width:100%;
+height:47px;
+border:0;
+border-radius:13px;
+color:#fff;
+font-weight:900;
+background:linear-gradient(135deg,var(--primary),var(--primary2))
+}
+
+.switch{
+text-align:center;
+color:var(--muted);
+font-size:12px;
+margin-top:15px
+}
+
+.switch button{
+border:0;
+background:none;
+color:#c084fc;
+font-weight:800
+}
+
+/* VIDEO VIEWER */
+
+.viewer{
+position:fixed;
+inset:0;
+z-index:5000;
+display:none;
+background:#000
+}
+
+.viewer.open{
+display:flex
+}
+
+.viewer video{
+width:100%;
+height:100%;
+object-fit:contain
+}
+
+.viewer-close{
+position:absolute;
+z-index:5;
+top:18px;
+right:18px;
+width:45px;
+height:45px;
+border:1px solid rgba(255,255,255,.2);
+border-radius:13px;
+background:rgba(0,0,0,.6);
+color:#fff;
+font-size:22px
+}
+
+/* TOAST */
+
+.toast{
+position:fixed;
+z-index:9000;
+left:50%;
+bottom:25px;
+transform:translate(-50%,20px);
+opacity:0;
+pointer-events:none;
+padding:13px 18px;
+border:1px solid var(--border);
+border-radius:13px;
+background:#181820;
+color:#fff;
+font-size:12px;
+font-weight:800;
+transition:.25s;
+box-shadow:0 15px 50px rgba(0,0,0,.4)
+}
+
+.toast.show{
+opacity:1;
+transform:translate(-50%,0)
+}
+
+/* FOOTER */
+
+.footer{
+border-top:1px solid var(--border);
+padding:30px 10px;
+text-align:center;
+color:var(--muted);
+font-size:11px;
+margin-top:35px
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+.header{
+padding:0 10px
+}
+
+.logo{
+min-width:auto
+}
+
+.logo-text{
+display:none
+}
+
+.layout{
+display:block
+}
+
+.sidebar{
+position:fixed;
+z-index:1500;
+right:0;
+left:0;
+bottom:0;
+top:auto;
+width:100%;
+height:65px;
+padding:5px 7px;
+display:grid;
+grid-template-columns:repeat(5,1fr);
+background:rgba(7,7,11,.95);
+border-left:0;
+border-top:1px solid var(--border);
+backdrop-filter:blur(20px)
+}
+
+.sidebar-title,
+.divider{
+display:none
+}
+
+.nav-item{
+height:55px;
+padding:3px;
+margin:0;
+display:flex;
+flex-direction:column;
+justify-content:center;
+gap:2px;
+font-size:9px;
+text-align:center
+}
+
+.nav-icon{
+font-size:17px
+}
+
+.main{
+padding:13px;
+padding-bottom:85px
+}
+
+.hero{
+min-height:390px
+}
+
+.hero-content{
+padding:190px 20px 25px
+}
+
+.hero h1{
+font-size:36px
+}
+
+.grid{
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:9px
+}
+
+.card{
+border-radius:15px
+}
+
+.card-body{
+padding:9px
+}
+
+.card-title{
+font-size:12px
+}
+
+.card-meta{
+font-size:9px
+}
+
+.action{
+height:32px;
+font-size:9px
+}
+
+}
+
+@media(max-width:500px){
+
+.search{
+max-width:none
+}
+
+.header-actions .icon-btn{
+display:none
+}
+
+.login-btn{
+padding:0 11px;
+font-size:11px
+}
+
+.search input{
+font-size:11px
+}
+
+.hero{
+min-height:370px
+}
+
+.hero-content{
+padding-top:170px
+}
+
+.hero p{
+font-size:12px
+}
+
+.section-title{
+font-size:18px
+}
+
+.feed-text{
+font-size:13px
+}
+
+}
+
+/* LIGHT THEME SUPPORT */
+
+body.light{
+--bg:#f5f5f8;
+--bg2:#fff;
+--card:#fff;
+--card2:#f2f2f6;
+--border:rgba(0,0,0,.1);
+--text:#111;
+--muted:#666
+}
+
+body.light .header{
+background:rgba(255,255,255,.9)
+}
+
+body.light .search input,
+body.light .icon-btn,
+body.light .secondary,
+body.light .category,
+body.light .action,
+body.light .feed-action,
+body.light .nav-item{
+color:#222;
+background:rgba(0,0,0,.04)
+}
+
+body.light .modal-box{
+background:#fff
+}
+
+body.light .form-group input,
+body.light .form-group textarea,
+body.light .form-group select{
+color:#111;
+background:#f4f4f6
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<header class="header">
+
+<a class="logo" href="#" onclick="goHome()">
+<div class="logo-icon">⛩️</div>
+<div class="logo-text">Anime World</div>
+</a>
+
+<div class="search">
+<span class="search-icon">🔎</span>
+<input
+id="search"
+type="search"
+placeholder="ابحث عن أنمي أو منشور..."
+autocomplete="off">
+</div>
+
+<div class="header-actions">
+
+<button
+class="icon-btn"
+onclick="toggleTheme()"
+title="تغيير المظهر">
+🌙
+</button>
+
+<button
+class="icon-btn"
+onclick="showToast('الإشعارات ستكون متاحة قريباً')">
+🔔
+</button>
+
+<button
+id="accountButton"
+class="login-btn"
+onclick="openLogin()">
+تسجيل الدخول
+</button>
+
+</div>
+
+</header>
+
+
+<div class="layout">
+
+<aside class="sidebar">
+
+<div class="sidebar-title">
+الرئيسية
+</div>
+
+<button
+class="nav-item active"
+onclick="activateNav(this);goHome()">
+<span class="nav-icon">🏠</span>
+<span>الرئيسية</span>
+</button>
+
+<button
+class="nav-item"
+onclick="activateNav(this);sortPosts('views')">
+<span class="nav-icon">🔥</span>
+<span>الأكثر مشاهدة</span>
+</button>
+
+<button
+class="nav-item"
+onclick="activateNav(this);sortPosts('likes')">
+<span class="nav-icon">❤️</span>
+<span>الأكثر إعجاباً</span>
+</button>
+
+<button
+class="nav-item"
+onclick="activateNav(this);sortPosts('new')">
+<span class="nav-icon">🆕</span>
+<span>الأحدث</span>
+</button>
+
+<div class="divider"></div>
+
+<div class="sidebar-title">
+حسابك
+</div>
+
+<button
+class="nav-item"
+onclick="requireLogin()">
+<span class="nav-icon">❤️</span>
+<span>الإعجابات</span>
+</button>
+
+<button
+class="nav-item"
+onclick="requireLogin()">
+<span class="nav-icon">🔖</span>
+<span>المحفوظات</span>
+</button>
+
+<button
+class="nav-item"
+onclick="requireLogin()">
+<span class="nav-icon">👤</span>
+<span>ملفي الشخصي</span>
+</button>
+
+<div class="divider"></div>
+
+<button
+class="nav-item"
+onclick="showToast('الإعدادات قادمة في النظام الكامل')">
+<span class="nav-icon">⚙️</span>
+<span>الإعدادات</span>
+</button>
+
+</aside>
+
+
+<main class="main" id="home">
+
+<section class="hero">
+
+<div class="hero-content">
+
+<div class="badge">
+✨ منصة الأنمي
+</div>
+
+<h1>
+عالم الأنمي<br>
+بين يديك
+</h1>
+
+<p>
+اكتشف الفيديوهات والصور والمنشورات،
+وتفاعل مع مجتمع محبي الأنمي في مكان واحد.
+</p>
+
+<div class="hero-buttons">
+
+<button
+class="primary"
+onclick="document.getElementById('videos').scrollIntoView({behavior:'smooth'})">
+▶ ابدأ المشاهدة
+</button>
+
+<button
+class="secondary"
+onclick="openRegister()">
+✨ إنشاء حساب
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="section">
+
+<div class="section-header">
+
+<div>
+<div class="section-title">
+استكشف التصنيفات
+</div>
+<div class="section-subtitle">
+اختار النوع المفضل لك
+</div>
+</div>
+
+</div>
+
+<div class="categories">
+
+<button
+class="category active"
+onclick="filterCategory('all',this)">
+الكل
+</button>
+
+<button
+class="category"
+onclick="filterCategory('action',this)">
+أكشن
+</button>
+
+<button
+class="category"
+onclick="filterCategory('adventure',this)">
+مغامرات
+</button>
+
+<button
+class="category"
+onclick="filterCategory('fantasy',this)">
+فانتازيا
+</button>
+
+<button
+class="category"
+onclick="filterCategory('romance',this)">
+رومانسي
+</button>
+
+<button
+class="category"
+onclick="filterCategory('comedy',this)">
+كوميدي
+</button>
+
+<button
+class="category"
+onclick="filterCategory('horror',this)">
+رعب
+</button>
+
+</div>
+
+</section>
+
+
+<section
+class="section"
+id="videos">
+
+<div class="section-header">
+
+<div>
+<div class="section-title">
+🔥 الفيديوهات المنتشرة
+</div>
+<div class="section-subtitle">
+أفضل الفيديوهات حالياً
+</div>
+</div>
+
+<button
+class="view-all"
+onclick="showToast('سيتم إضافة صفحة الفيديوهات بالكامل')">
+عرض الكل
+</button>
+
+</div>
+
+
+<div
+class="grid"
+id="videoGrid">
+
+
+<article
+class="card"
+data-category="action"
+data-views="125000"
+data-likes="18400">
+
+<div
+class="media"
+onclick="openVideo(
+'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+'أفضل لحظة قتالية'
+)">
+
+<img
+src="https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=900&q=85"
+alt="Anime">
+
+<span class="media-type">
+🎬 فيديو
+</span>
+
+<span class="play">
+▶
+</span>
+
+</div>
+
+<div class="card-body">
+
+<div class="card-title">
+أفضل لحظة قتالية في الأنمي 🔥
+</div>
+
+<div class="card-meta">
+<span>👁️ 125K</span>
+<span>❤️ 18.4K</span>
+</div>
+
+<div class="card-actions">
+
+<button
+class="action"
+onclick="likeButton(this)">
+♡ 18.4K
+</button>
+
+<button
+class="action"
+onclick="showToast('التعليقات قادمة')">
+💬 2.1K
+</button>
+
+<button
+class="action"
+onclick="saveButton(this)">
+🔖
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+
+<article
+class="card"
+data-category="fantasy"
+data-views="98000"
+data-likes="14700">
+
+<div
+class="media"
+onclick="openVideo(
+'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+'عالم خيالي'
+)">
+
+<img
+src="https://images.unsplash.com/photo-1613376023733-0a73315d9b06?auto=format&fit=crop&w=900&q=85"
+alt="Anime">
+
+<span class="media-type">
+🎬 فيديو
+</span>
+
+<span class="play">
+▶
+</span>
+
+</div>
+
+<div class="card-body">
+
+<div class="card-title">
+عالم خيالي لا يصدق ✨
+</div>
+
+<div class="card-meta">
+<span>👁️ 98K</span>
+<span>❤️ 14.7K</span>
+</div>
+
+<div class="card-actions">
+
+<button
+class="action"
+onclick="likeButton(this)">
+♡ 14.7K
+</button>
+
+<button
+class="action"
+onclick="showToast('التعليقات قادمة')">
+💬 1.8K
+</button>
+
+<button
+class="action"
+onclick="saveButton(this)">
+🔖
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+
+<article
+class="card"
+data-category="adventure"
+data-views="76000"
+data-likes="11200">
+
+<div
+class="media"
+onclick="openVideo(
+'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+'مغامرة جديدة'
+)">
+
+<img
+src="https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&w=900&q=85"
+alt="Anime">
+
+<span class="media-type">
+🎬 فيديو
+</span>
+
+<span class="play">
+▶
+</span>
+
+</div>
+
+<div class="card-body">
+
+<div class="card-title">
+مغامرة جديدة بدأت الآن
+</div>
+
+<div class="card-meta">
+<span>👁️ 76K</span>
+<span>❤️ 11.2K</span>
+</div>
+
+<div class="card-actions">
+
+<button
+class="action"
+onclick="likeButton(this)">
+♡ 11.2K
+</button>
+
+<button
+class="action"
+onclick="showToast('التعليقات قادمة')">
+💬 923
+</button>
+
+<button
+class="action"
+onclick="saveButton(this)">
+🔖
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+
+<article
+class="card"
+data-category="romance"
+data-views="63000"
+data-likes="9600">
+
+<div
+class="media"
+onclick="openVideo(
+'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+'لحظة رومانسية'
+)">
+
+<img
+src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=85"
+alt="Anime">
+
+<span class="media-type">
+🎬 فيديو
+</span>
+
+<span class="play">
+▶
+</span>
+
+</div>
+
+<div class="card-body">
+
+<div class="card-title">
+أجمل لحظة رومانسية ❤️
+</div>
+
+<div class="card-meta">
+<span>👁️ 63K</span>
+<span>❤️ 9.6K</span>
+</div>
+
+<div class="card-actions">
+
+<button
+class="action"
+onclick="likeButton(this)">
+♡ 9.6K
+</button>
+
+<button
+class="action"
+onclick="showToast('التعليقات قادمة')">
+💬 710
+</button>
+
+<button
+class="action"
+onclick="saveButton(this)">
+🔖
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+
+<article
+class="card"
+data-category="action"
+data-views="54000"
+data-likes="8100">
+
+<div
+class="media"
+onclick="openVideo(
+'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+'المعركة الأخيرة'
+)">
+
+<img
+src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=900&q=85"
+alt="Anime">
+
+<span class="media-type">
+🎬 فيديو
+</span>
+
+<span class="play">
+▶
+</span>
+
+</div>
+
+<div class="card-body">
+
+<div class="card-title">
+المعركة الأخيرة 🔥
+</div>
+
+<div class="card-meta">
+<span>👁️ 54K</span>
+<span>❤️ 8.1K</span>
+</div>
+
+<div class="card-actions">
+
+<button
+class="action"
+onclick="likeButton(this)">
+♡ 8.1K
+</button>
+
+<button
+class="action"
+onclick="showToast('التعليقات قادمة')">
+💬 540
+</button>
+
+<button
+class="action"
+onclick="saveButton(this)">
+🔖
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+
+<article
+class="card"
+data-category="comedy"
+data-views="49000"
+data-likes="7200">
+
+<div
+class="media"
+onclick="openVideo(
+'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+'لقطة مضحكة'
+)">
+
+<img
+src="https://images.unsplash.com/photo-1606112219348-204d7d8b94ee?auto=format&fit=crop&w=900&q=85"
+alt="Anime">
+
+<span class="media-type">
+🎬 فيديو
+</span>
+
+<span class="play">
+▶
+</span>
+
+</div>
+
+<div class="card-body">
+
+<div class="card-title">
+أكثر لقطة مضحكة 😂
+</div>
+
+<div class="card-meta">
+<span>👁️ 49K</span>
+<span>❤️ 7.2K</span>
+</div>
+
+<div class="card-actions">
+
+<button
+class="action"
+onclick="likeButton(this)">
+♡ 7.2K
+</button>
+
+<button
+class="action"
+onclick="showToast('التعليقات قادمة')">
+💬 410
+</button>
+
+<button
+class="action"
+onclick="saveButton(this)">
+🔖
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+</div>
+
+</section>
+
+
+<section class="section">
+
+<div class="section-header">
+
+<div>
+<div class="section-title">
+🖼️ صور الأنمي
+</div>
+<div class="section-subtitle">
+أحدث الصور والمنشورات
+</div>
+</div>
+
+</div>
+
+
+<div class="grid">
+
+<article class="card">
+
+<div class="media">
+
+<img
+src="https://images.unsplash.com/photo-1535016120720-40c646be5580?auto=format&fit=crop&w=900&q=85"
+alt="Anime">
+
+<span class="media-type">
+🖼️ صورة
+</span>
+
+</div>
+
+<div class="card-body">
+
+<div class="card-title">
+خلفية أنمي فخمة
+</div>
+
+<div class="card-meta">
+<span>👁️ 42K</span>
+<span>❤️ 8.3K</span>
+</div>
+
+<div class="card-actions">
+
+<button
+class="action"
+onclick="likeButton(this)">
+♡ 8.3K
+</button>
+
+<button
+class="action"
+onclick="showToast('التعليقات قادمة')">
+💬
+</button>
+
+<button
+class="action"
+onclick="saveButton(this)">
+🔖
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+
+<article class="card">
+
+<div class="media">
+
+<img
+src="https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=900&q=85"
+alt="Anime">
+
+<span class="media-type">
+🖼️ صورة
+</span>
+
+</div>
+
+<div class="card-body">
+
+<div class="card-title">
+تصميم أنمي جديد 🔥
+</div>
+
+<div class="card-meta">
+<span>👁️ 31K</span>
+<span>❤️ 6.1K</span>
+</div>
+
+<div class="card-actions">
+
+<button
+class="action"
+onclick="likeButton(this)">
+♡ 6.1K
+</button>
+
+<button
+class="action"
+onclick="showToast('التعليقات قادمة')">
+💬
+</button>
+
+<button
+class="action"
+onclick="saveButton(this)">
+🔖
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+
+<article class="card">
+
+<div class="media">
+
+<img
+src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=900&q=85"
+alt="Anime">
+
+<span class="media-type">
+🖼️ صورة
+</span>
+
+</div>
+
+<div class="card-body">
+
+<div class="card-title">
+منظر خيالي 🌌
+</div>
+
+<div class="card-meta">
+<span>👁️ 27K</span>
+<span>❤️ 5.4K</span>
+</div>
+
+<div class="card-actions">
+
+<button
+class="action"
+onclick="likeButton(this)">
+♡ 5.4K
+</button>
+
+<button
+class="action"
+onclick="showToast('التعليقات قادمة')">
+💬
+</button>
+
+<button
+class="action"
+onclick="saveButton(this)">
+🔖
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+
+<article class="card">
+
+<div class="media">
+
+<img
+src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=85"
+alt="Anime">
+
+<span class="media-type">
+🖼️ صورة
+</span>
+
+</div>
+
+<div class="card-body">
+
+<div class="card-title">
+شخصية أنمي أسطورية ⭐
+</div>
+
+<div class="card-meta">
+<span>👁️ 21K</span>
+<span>❤️ 4.9K</span>
+</div>
+
+<div class="card-actions">
+
+<button
+class="action"
+onclick="likeButton(this)">
+♡ 4.9K
+</button>
+
+<button
+class="action"
+onclick="showToast('التعليقات قادمة')">
+💬
+</button>
+
+<button
+class="action"
+onclick="saveButton(this)">
+🔖
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+</div>
+
+</section>
+
+
+<section class="section">
+
+<div class="section-header">
+
+<div>
+<div class="section-title">
+📱 منشورات المجتمع
+</div>
+<div class="section-subtitle">
+آخر ما نشره المستخدمون
+</div>
+</div>
+
+</div>
+
+
+<article class="feed">
+
+<div class="feed-header">
+
+<div class="avatar">
+G
+</div>
+
+<div class="user-info">
+
+<strong>
+Gojo Esultan
+</strong>
+
+<small>
+منذ 12 دقيقة • 🌎
+</small>
+
+</div>
+
+<button
+class="more"
+onclick="showToast('المزيد من الخيارات قادم')">
+⋮
+</button>
+
+</div>
+
+<div class="feed-text">
+
+إيه أكتر شخصية أنمي شايفين إنها تستحق
+تكون الأقوى؟ 🔥
+
+</div>
+
+<img
+class="feed-image"
+src="https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1400&q=85"
+alt="Anime">
+
+<div class="feed-stats">
+
+<span>
+❤️ 24.8K إعجاب
+</span>
+
+<span>
+1.9K تعليق • 421 مشاركة
+</span>
+
+</div>
+
+<div class="feed-actions">
+
+<button
+class="feed-action"
+onclick="feedLike(this)">
+❤️ إعجاب
+</button>
+
+<button
+class="feed-action"
+onclick="showToast('قسم التعليقات قادم')">
+💬 تعليق
+</button>
+
+<button
+class="feed-action"
+onclick="sharePost()">
+↗ مشاركة
+</button>
+
+</div>
+
+</article>
+
+</section>
+
+
+<footer class="footer">
+
+<div>
+© 2026 Anime World
+</div>
+
+<div style="margin-top:7px">
+منصة أنمي ومجتمع لمحبي الأنمي
+</div>
+
+</footer>
+
+</main>
+
+</div>
+
+
+<!-- LOGIN MODAL -->
+
+<div
+class="modal"
+id="loginModal"
+onclick="outsideModal(event,'loginModal')">
+
+<div
+class="modal-box"
+onclick="event.stopPropagation()">
+
+<div class="modal-head">
+
+<div class="modal-title">
+تسجيل الدخول
+</div>
+
+<button
+class="close"
+onclick="closeLogin()">
+×
+</button>
+
+</div>
+
+<form onsubmit="login(event)">
+
+<div class="form-group">
+
+<label>
+البريد الإلكتروني
+</label>
+
+<input
+id="loginEmail"
+type="email"
+required
+placeholder="example@email.com">
+
+</div>
+
+<div class="form-group">
+
+<label>
+كلمة المرور
+</label>
+
+<input
+id="loginPassword"
+type="password"
+required
+placeholder="••••••••">
+
+</div>
+
+<button
+class="submit"
+type="submit">
+تسجيل الدخول
+</button>
+
+</form>
+
+<div class="switch">
+
+ليس لديك حساب؟
+
+<button onclick="switchRegister()">
+إنشاء حساب
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- REGISTER MODAL -->
+
+<div
+class="modal"
+id="registerModal"
+onclick="outsideModal(event,'registerModal')">
+
+<div
+class="modal-box"
+onclick="event.stopPropagation()">
+
+<div class="modal-head">
+
+<div class="modal-title">
+إنشاء حساب
+</div>
+
+<button
+class="close"
+onclick="closeRegister()">
+×
+</button>
+
+</div>
+
+<form onsubmit="register(event)">
+
+<div class="form-group">
+
+<label>
+اسم المستخدم
+</label>
+
+<input
+id="registerName"
+type="text"
+minlength="3"
+maxlength="30"
+required
+placeholder="اسم المستخدم">
+
+</div>
+
+<div class="form-group">
+
+<label>
+البريد الإلكتروني
+</label>
+
+<input
+id="registerEmail"
+type="email"
+required
+placeholder="example@email.com">
+
+</div>
+
+<div class="form-group">
+
+<label>
+كلمة المرور
+</label>
+
+<input
+id="registerPassword"
+type="password"
+minlength="8"
+required
+placeholder="8 أحرف على الأقل">
+
+</div>
+
+<button
+class="submit"
+type="submit">
+إنشاء الحساب
+</button>
+
+</form>
+
+<div class="switch">
+
+لديك حساب بالفعل؟
+
+<button onclick="switchLogin()">
+تسجيل الدخول
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- VIDEO VIEWER -->
+
+<div
+class="viewer"
+id="viewer">
+
+<button
+class="viewer-close"
+onclick="closeVideo()">
+×
+</button>
+
+<video
+id="viewerVideo"
+controls
+playsinline>
+</video>
+
+</div>
+
+
+<div
+class="toast"
+id="toast">
+</div>
+
+
+<script>
+
+"use strict";
+
+/* ========================= */
+/* APPLICATION STATE */
+/* ========================= */
+
+const App = {
+
+user:null,
+
+theme:
+localStorage.getItem("theme") || "dark",
+
+category:"all",
+
+saved:new Set(
+JSON.parse(
+localStorage.getItem("savedPosts") || "[]"
+)
+),
+
+liked:new Set(
+JSON.parse(
+localStorage.getItem("likedPosts") || "[]"
+)
+)
+
+};
+
+
+/* ========================= */
+/* HELPERS */
+/* ========================= */
+
+function $(selector){
+
+return document.querySelector(selector);
+
+}
+
+function $$(selector){
+
+return document.querySelectorAll(selector);
+
+}
+
+function showToast(message){
+
+const toast=$("#toast");
+
+toast.textContent=message;
+
+toast.classList.add("show");
+
+clearTimeout(window.toastTimer);
+
+window.toastTimer=setTimeout(
+()=>{
+toast.classList.remove("show");
+},
+2500
+);
+
+}
+
+
+/* ========================= */
+/* THEME */
+/* ========================= */
+
+function applyTheme(){
+
+if(App.theme==="light"){
+
+document.body.classList.add("light");
+
+}else{
+
+document.body.classList.remove("light");
+
+}
+
+localStorage.setItem(
+"theme",
+App.theme
+);
+
+}
+
+function toggleTheme(){
+
+App.theme=
+App.theme==="dark"
+?"light"
+:"dark";
+
+applyTheme();
+
+showToast(
+App.theme==="light"
+?"تم تشغيل الوضع الفاتح ☀️"
+:"تم تشغيل الوضع الداكن 🌙"
+);
+
+}
+
+
+/* ========================= */
+/* NAVIGATION */
+/* ========================= */
+
+function activateNav(button){
+
+$$(".nav-item").forEach(
+item=>{
+item.classList.remove("active");
+}
+);
+
+button.classList.add("active");
+
+}
+
+function goHome(){
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+
+/* ========================= */
+/* AUTH UI */
+/* ========================= */
+
+function openLogin(){
+
+$("#loginModal")
+.classList.add("open");
+
+}
+
+function closeLogin(){
+
+$("#loginModal")
+.classList.remove("open");
+
+}
+
+function openRegister(){
+
+$("#registerModal")
+.classList.add("open");
+
+}
+
+function closeRegister(){
+
+$("#registerModal")
+.classList.remove("open");
+
+}
+
+function switchRegister(){
+
+closeLogin();
+
+openRegister();
+
+}
+
+function switchLogin(){
+
+closeRegister();
+
+openLogin();
+
+}
+
+function outsideModal(event,id){
+
+if(event.target.id===id){
+
+document
+.getElementById(id)
+.classList.remove("open");
+
+}
+
+}
+
+
+/* ========================= */
+/* DEMO USER ID */
+/* ========================= */
+
+function generateUserId(){
+
+const min=100000000;
+
+const max=999999999;
+
+return Math.floor(
+Math.random()*
+(max-min+1)
+)+min;
+
+}
+
+
+/* ========================= */
+/* REGISTER */
+/* ========================= */
+
+function register(event){
+
+event.preventDefault();
+
+const name=
+$("#registerName")
+.value
+.trim();
+
+const email=
+$("#registerEmail")
+.value
+.trim()
+.toLowerCase();
+
+const password=
+$("#registerPassword")
+.value;
+
+if(
+name.length<3 ||
+email.length<5 ||
+password.length<8
+){
+
+showToast(
+"تأكد من إدخال البيانات بشكل صحيح"
+);
+
+return;
+
+}
+
+const user={
+
+id:generateUserId(),
+
+name:name,
+
+email:email
+
+};
+
+App.user=user;
+
+localStorage.setItem(
+"demoUser",
+JSON.stringify(user)
+);
+
+closeRegister();
+
+updateAccountButton();
+
+showToast(
+`تم إنشاء الحساب بنجاح • ID: ${user.id}`
+);
+
+}
+
+
+/* ========================= */
+/* LOGIN */
+/* ========================= */
+
+function login(event){
+
+event.preventDefault();
+
+const email=
+$("#loginEmail")
+.value
+.trim()
+.toLowerCase();
+
+const password=
+$("#loginPassword")
+.value;
+
+if(!email || !password){
+
+showToast(
+"أدخل البريد وكلمة المرور"
+);
+
+return;
+
+}
+
+let stored=
+localStorage.getItem("demoUser");
+
+if(stored){
+
+try{
+
+const user=
+JSON.parse(stored);
+
+if(user.email===email){
+
+App.user=user;
+
+}else{
+
+App.user={
+id:generateUserId(),
+name:"مستخدم",
+email:email
+};
+
+}
+
+}catch(error){
+
+App.user={
+id:generateUserId(),
+name:"مستخدم",
+email:email
+};
+
+}
+
+}else{
+
+App.user={
+id:generateUserId(),
+name:"مستخدم",
+email:email
+};
+
+}
+
+localStorage.setItem(
+"demoUser",
+JSON.stringify(App.user)
+);
+
+closeLogin();
+
+updateAccountButton();
+
+showToast(
+"تم تسجيل الدخول بنجاح ✅"
+);
+
+}
+
+
+/* ========================= */
+/* ACCOUNT BUTTON */
+/* ========================= */
+
+function updateAccountButton(){
+
+const button=
+$("#accountButton");
+
+if(!App.user){
+
+button.textContent=
+"تسجيل الدخول";
+
+button.onclick=
+openLogin;
+
+return;
+
+}
+
+button.textContent=
+"👤 "+
+(
+App.user.name.length>10
+?App.user.name.substring(0,10)+"…"
+:App.user.name
+);
+
+button.onclick=
+showAccountMenu;
+
+}
+
+function showAccountMenu(){
+
+if(!App.user){
+
+openLogin();
+
+return;
+
+}
+
+const logout=
+confirm(
+`حسابك\n\nالاسم: ${App.user.name}\nID: ${App.user.id}\n\nهل تريد تسجيل الخروج؟`
+);
+
+if(logout){
+
+logoutUser();
+
+}
+
+}
+
+function logoutUser(){
+
+App.user=null;
+
+localStorage.removeItem(
+"demoUser"
+);
+
+updateAccountButton();
+
+showToast(
+"تم تسجيل الخروج"
+);
+
+}
+
+
+/* ========================= */
+/* REQUIRE LOGIN */
+/* ========================= */
+
+function requireLogin(){
+
+if(!App.user){
+
+showToast(
+"يجب تسجيل الدخول أولاً 🔐"
+);
+
+openLogin();
+
+return false;
+
+}
+
+showToast(
+"هذه الميزة ستتصل بقاعدة البيانات في النظام الكامل"
+);
+
+return true;
+
+}
+
+
+/* ========================= */
+/* LIKE */
+/* ========================= */
+
+function likeButton(button){
+
+const card=
+button.closest(".card");
+
+if(!card){
+
+return;
+
+}
+
+if(
+!App.user
+){
+
+showToast(
+"سجل الدخول حتى تقدر تعمل إعجاب ❤️"
+);
+
+openLogin();
+
+return;
+
+}
+
+const key=
+card.querySelector(
+".card-title"
+)?.textContent
+||Math.random();
+
+if(
+App.liked.has(key)
+){
+
+App.liked.delete(key);
+
+button.classList.remove(
+"liked"
+);
+
+button.textContent=
+button.textContent
+.replace("♥","♡");
+
+}else{
+
+App.liked.add(key);
+
+button.classList.add(
+"liked"
+);
+
+button.textContent=
+button.textContent
+.replace("♡","♥");
+
+}
+
+localStorage.setItem(
+"likedPosts",
+JSON.stringify(
+[...App.liked]
+)
+);
+
+}
+
+
+/* ========================= */
+/* SAVE */
+/* ========================= */
+
+function saveButton(button){
+
+const card=
+button.closest(".card");
+
+const key=
+card.querySelector(
+".card-title"
+)?.textContent
+||Math.random();
+
+if(
+App.saved.has(key)
+){
+
+App.saved.delete(key);
+
+button.classList.remove(
+"saved"
+);
+
+button.textContent="🔖";
+
+showToast(
+"تمت إزالة المنشور من المحفوظات"
+);
+
+}else{
+
+App.saved.add(key);
+
+button.classList.add(
+"saved"
+);
+
+button.textContent="✅";
+
+showToast(
+"تم حفظ المنشور 🔖"
+);
+
+}
+
+localStorage.setItem(
+"savedPosts",
+JSON.stringify(
+[...App.saved]
+)
+);
+
+}
+
+
+/* ========================= */
+/* FEED LIKE */
+/* ========================= */
+
+function feedLike(button){
+
+if(!App.user){
+
+openLogin();
+
+showToast(
+"سجل الدخول أولاً ❤️"
+);
+
+return;
+
+}
+
+if(
+button.classList.contains("liked")
+){
+
+button.classList.remove("liked");
+
+button.textContent=
+"❤️ إعجاب";
+
+}else{
+
+button.classList.add("liked");
+
+button.textContent=
+"❤️ تم الإعجاب";
+
+showToast(
+"تم تسجيل إعجابك ❤️"
+);
+
+}
+
+}
+
+
+/* ========================= */
+/* VIDEO */
+/* ========================= */
+
+function openVideo(source,title){
+
+const viewer=
+$("#viewer");
+
+const video=
+$("#viewerVideo");
+
+video.src=source;
+
+if(title){
+
+video.setAttribute(
+"aria-label",
+title
+);
+
+}
+
+viewer.classList.add("open");
+
+document.body.style.overflow=
+"hidden";
+
+video.play().catch(
+()=>{}
+);
+
+}
+
+function closeVideo(){
+
+const viewer=
+$("#viewer");
+
+const video=
+$("#viewerVideo");
+
+video.pause();
+
+video.removeAttribute(
+"src"
+);
+
+video.load();
+
+viewer.classList.remove(
+"open"
+);
+
+document.body.style.overflow=
+"";
+
+}
+
+
+/* ========================= */
+/* CATEGORY FILTER */
+/* ========================= */
+
+function filterCategory(
+category,
+button
+){
+
+App.category=category;
+
+$$(".category")
+.forEach(
+item=>{
+item.classList.remove("active");
+}
+);
+
+button.classList.add("active");
+
+$$("#videoGrid .card")
+.forEach(
+card=>{
+
+const cardCategory=
+card.dataset.category;
+
+if(
+category==="all" ||
+cardCategory===category
+){
+
+card.style.display="";
+
+}else{
+
+card.style.display="none";
+
+}
+
+}
+);
+
+}
+
+
+/* ========================= */
+/* SEARCH */
+/* ========================= */
+
+$("#search")
+.addEventListener(
+"input",
+function(){
+
+const query=
+this.value
+.trim()
+.toLowerCase();
+
+$$(".card")
+.forEach(
+card=>{
+
+const title=
+card.querySelector(
+".card-title"
+)?.textContent
+.toLowerCase()
+||"";
+
+const category=
+card.dataset.category
+||"";
+
+if(
+!query ||
+title.includes(query) ||
+category.includes(query)
+){
+
+card.style.display="";
+
+}else{
+
+card.style.display="none";
+
+}
+
+}
+);
+
+}
+);
+
+
+/* ========================= */
+/* SORTING */
+/* ========================= */
+
+function sortPosts(type){
+
+const grid=
+$("#videoGrid");
+
+const cards=
+[...grid.querySelectorAll(".card")];
+
+cards.sort(
+(a,b)=>{
+
+if(type==="views"){
+
+return Number(
+b.dataset.views
+)-
+Number(
+a.dataset.views
+);
+
+}
+
+if(type==="likes"){
+
+return Number(
+b.dataset.likes
+)-
+Number(
+a.dataset.likes
+);
+
+}
+
+if(type==="new"){
+
+return 0;
+
+}
+
+return 0;
+
+}
+);
+
+cards.forEach(
+card=>{
+grid.appendChild(card);
+}
+);
+
+showToast(
+type==="views"
+?"تم ترتيب الأكثر مشاهدة 🔥"
+:type==="likes"
+?"تم ترتيب الأكثر إعجاباً ❤️"
+:"تم عرض الأحدث 🆕"
+);
+
+}
+
+
+/* ========================= */
+/* SHARE */
+/* ========================= */
+
+async function sharePost(){
+
+if(
+navigator.share
+){
+
+try{
+
+await navigator.share({
+
+title:"Anime World",
+
+text:
+"شوف المنشور ده على Anime World!"
+
+});
+
+}catch(error){}
+
+}else{
+
+showToast(
+"المشاركة غير مدعومة على هذا الجهاز"
+);
+
+}
+
+}
+
+
+/* ========================= */
+/* KEYBOARD */
+/* ========================= */
+
+document.addEventListener(
+"keydown",
+event=>{
+
+if(
+event.key==="Escape"
+){
+
+closeLogin();
+
+closeRegister();
+
+closeVideo();
+
+}
+
+}
+);
+
+
+/* ========================= */
+/* DOUBLE CLICK VIDEO */
+/* ========================= */
+
+document.addEventListener(
+"dblclick",
+event=>{
+
+if(
+event.target.tagName!=="VIDEO"
+){
+
+return;
+
+}
+
+const video=
+event.target;
+
+if(
+document.fullscreenElement
+){
+
+document.exitFullscreen();
+
+}else if(
+video.requestFullscreen
+){
+
+video.requestFullscreen();
+
+}
+
+}
+);
+
+
+/* ========================= */
+/* LOAD USER */
+/* ========================= */
+
+function loadUser(){
+
+const stored=
+localStorage.getItem(
+"demoUser"
+);
+
+if(!stored){
+
+return;
+
+}
+
+try{
+
+App.user=
+JSON.parse(stored);
+
+}catch(error){
+
+App.user=null;
+
+}
+
+}
+
+
+/* ========================= */
+/* INITIALIZE */
+/* ========================= */
+
+function initialize(){
+
+loadUser();
+
+applyTheme();
+
+updateAccountButton();
+
+console.log(
+"Anime World initialized."
+);
+
+}
+
+initialize();
+
+</script>
+
+</body>
+</html>
