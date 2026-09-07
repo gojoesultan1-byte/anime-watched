@@ -1,682 +1,1388 @@
 const Database = require("better-sqlite3");
 const path = require("path");
 
-const dbPath = path.join(__dirname, "anime_world.db");
+const dbPath =
+    process.env.DATABASE_PATH ||
+    path.join(__dirname, "anime-world.db");
 
 const db = new Database(dbPath);
+
+
+/* =========================================
+   DATABASE SETTINGS
+========================================= */
 
 db.pragma("journal_mode = WAL");
 db.pragma("foreign_keys = ON");
 
+
+/* =========================================
+   USERS
+========================================= */
+
 db.exec(`
 CREATE TABLE IF NOT EXISTS users (
+
     id INTEGER PRIMARY KEY,
+
     username TEXT NOT NULL,
+
     email TEXT NOT NULL UNIQUE,
+
     password_hash TEXT NOT NULL,
+
     role TEXT NOT NULL DEFAULT 'user',
+
     avatar TEXT DEFAULT '',
+
     bio TEXT DEFAULT '',
+
     is_active INTEGER NOT NULL DEFAULT 1,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+
+    created_at TEXT NOT NULL DEFAULT
+        CURRENT_TIMESTAMP
+
 );
-
-CREATE TABLE IF NOT EXISTS posts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    title TEXT NOT NULL,
-    description TEXT DEFAULT '',
-    media_type TEXT NOT NULL,
-    media_url TEXT NOT NULL,
-    thumbnail_url TEXT DEFAULT '',
-    views INTEGER NOT NULL DEFAULT 0,
-    likes INTEGER NOT NULL DEFAULT 0,
-    comments_count INTEGER NOT NULL DEFAULT 0,
-    status TEXT NOT NULL DEFAULT 'published',
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS likes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    post_id INTEGER NOT NULL,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id, post_id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS views (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    post_id INTEGER NOT NULL,
-    ip_hash TEXT DEFAULT '',
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS comments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    post_id INTEGER NOT NULL,
-    content TEXT NOT NULL,
-    is_deleted INTEGER NOT NULL DEFAULT 0,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS coupons (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    code TEXT NOT NULL UNIQUE,
-    value TEXT NOT NULL,
-    max_uses INTEGER NOT NULL DEFAULT 1,
-    used_count INTEGER NOT NULL DEFAULT 0,
-    is_active INTEGER NOT NULL DEFAULT 1,
-    expires_at TEXT,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS site_settings (
-    id INTEGER PRIMARY KEY CHECK (id = 1),
-    site_name TEXT NOT NULL DEFAULT 'Anime World',
-    primary_color TEXT NOT NULL DEFAULT '#7c3aed',
-    secondary_color TEXT NOT NULL DEFAULT '#a855f7',
-    background_color TEXT NOT NULL DEFAULT '#07070b',
-    card_color TEXT NOT NULL DEFAULT '#101017',
-    show_search INTEGER NOT NULL DEFAULT 1,
-    show_videos INTEGER NOT NULL DEFAULT 1,
-    show_images INTEGER NOT NULL DEFAULT 1,
-    show_community INTEGER NOT NULL DEFAULT 1,
-    allow_register INTEGER NOT NULL DEFAULT 1,
-    allow_comments INTEGER NOT NULL DEFAULT 1,
-    allow_likes INTEGER NOT NULL DEFAULT 1,
-    maintenance_mode INTEGER NOT NULL DEFAULT 0
-);
-
-CREATE TABLE IF NOT EXISTS admin_logs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    admin_id INTEGER NOT NULL,
-    action TEXT NOT NULL,
-    target_type TEXT DEFAULT '',
-    target_id TEXT DEFAULT '',
-    details TEXT DEFAULT '',
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-CREATE INDEX IF NOT EXISTS idx_posts_user
-ON posts(user_id);
-
-CREATE INDEX IF NOT EXISTS idx_posts_status
-ON posts(status);
-
-CREATE INDEX IF NOT EXISTS idx_posts_created
-ON posts(created_at);
-
-CREATE INDEX IF NOT EXISTS idx_likes_post
-ON likes(post_id);
-
-CREATE INDEX IF NOT EXISTS idx_views_post
-ON views(post_id);
-
-CREATE INDEX IF NOT EXISTS idx_comments_post
-ON comments(post_id);
-
-CREATE INDEX IF NOT EXISTS idx_admin_logs_admin
-ON admin_logs(admin_id);
 `);
 
-const existingSettings = db
-    .prepare("SELECT id FROM site_settings WHERE id = 1")
-    .get();
 
-if (!existingSettings) {
+/* =========================================
+   POSTS
+========================================= */
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS posts (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    user_id INTEGER,
+
+    title TEXT NOT NULL,
+
+    description TEXT DEFAULT '',
+
+    media_url TEXT NOT NULL,
+
+    thumbnail_url TEXT DEFAULT '',
+
+    media_type TEXT NOT NULL,
+
+    status TEXT NOT NULL DEFAULT 'published',
+
+    views INTEGER NOT NULL DEFAULT 0,
+
+    likes INTEGER NOT NULL DEFAULT 0,
+
+    created_at TEXT NOT NULL DEFAULT
+        CURRENT_TIMESTAMP,
+
+    updated_at TEXT,
+
+    FOREIGN KEY(user_id)
+        REFERENCES users(id)
+        ON DELETE SET NULL
+
+);
+`);
+
+
+/* =========================================
+   POST LIKES
+========================================= */
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS post_likes (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    post_id INTEGER NOT NULL,
+
+    user_id INTEGER NOT NULL,
+
+    created_at TEXT NOT NULL DEFAULT
+        CURRENT_TIMESTAMP,
+
+    UNIQUE(post_id, user_id),
+
+    FOREIGN KEY(post_id)
+        REFERENCES posts(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY(user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+
+);
+`);
+
+
+/* =========================================
+   POST VIEWS
+========================================= */
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS post_views (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    post_id INTEGER NOT NULL,
+
+    user_id INTEGER,
+
+    visitor_key TEXT,
+
+    created_at TEXT NOT NULL DEFAULT
+        CURRENT_TIMESTAMP,
+
+    FOREIGN KEY(post_id)
+        REFERENCES posts(id)
+        ON DELETE CASCADE
+
+);
+`);
+
+
+/* =========================================
+   COUPONS
+========================================= */
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS coupons (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    code TEXT NOT NULL UNIQUE,
+
+    value TEXT NOT NULL,
+
+    max_uses INTEGER NOT NULL DEFAULT 1,
+
+    used_count INTEGER NOT NULL DEFAULT 0,
+
+    expires_at TEXT,
+
+    is_active INTEGER NOT NULL DEFAULT 1,
+
+    created_at TEXT NOT NULL DEFAULT
+        CURRENT_TIMESTAMP
+
+);
+`);
+
+
+/* =========================================
+   SITE SETTINGS
+========================================= */
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS settings (
+
+    id INTEGER PRIMARY KEY CHECK(id = 1),
+
+    site_name TEXT DEFAULT 'Anime World',
+
+    site_description TEXT DEFAULT
+        'عالم الأنمي الخاص بك',
+
+    logo_url TEXT DEFAULT '',
+
+    favicon_url TEXT DEFAULT '',
+
+    primary_color TEXT DEFAULT '#657fff',
+
+    secondary_color TEXT DEFAULT '#4057db',
+
+    background_color TEXT DEFAULT '#070a14',
+
+    card_color TEXT DEFAULT '#10162c',
+
+    text_color TEXT DEFAULT '#ffffff',
+
+    accent_color TEXT DEFAULT '#7690ff',
+
+    allow_register INTEGER DEFAULT 1,
+
+    allow_comments INTEGER DEFAULT 1,
+
+    allow_likes INTEGER DEFAULT 1,
+
+    show_videos INTEGER DEFAULT 1,
+
+    show_images INTEGER DEFAULT 1,
+
+    show_search INTEGER DEFAULT 1,
+
+    show_community INTEGER DEFAULT 1,
+
+    maintenance_mode INTEGER DEFAULT 0
+
+);
+`);
+
+
+/* =========================================
+   DEFAULT SETTINGS
+========================================= */
+
+const insertSettings =
     db.prepare(`
-        INSERT INTO site_settings (
-            id,
-            site_name
-        )
-        VALUES (
-            1,
-            ?
-        )
-    `).run("Anime World");
-}
-
-function generateUserId() {
-    let id;
-
-    do {
-        id = Math.floor(
-            100000000 +
-            Math.random() * 900000000
-        );
-    } while (
-        db
-            .prepare(
-                "SELECT id FROM users WHERE id = ?"
-            )
-            .get(id)
-    );
-
-    return id;
-}
-
-function createUser({
-    username,
-    email,
-    passwordHash,
-    role = "user"
-}) {
-    const id =
-        role === "owner"
-            ? 111111111
-            : generateUserId();
-
-    const statement = db.prepare(`
-        INSERT INTO users (
-            id,
-            username,
-            email,
-            password_hash,
-            role
-        )
-        VALUES (
-            ?,
-            ?,
-            ?,
-            ?,
-            ?
-        )
+        INSERT OR IGNORE INTO settings
+        (id)
+        VALUES (1)
     `);
 
-    statement.run(
-        id,
-        username,
-        email,
-        passwordHash,
-        role
-    );
+insertSettings.run();
 
-    return db
-        .prepare(
-            "SELECT id, username, email, role FROM users WHERE id = ?"
-        )
-        .get(id);
-}
+
+/* =========================================
+   COMMENTS
+========================================= */
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS comments (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    post_id INTEGER NOT NULL,
+
+    user_id INTEGER NOT NULL,
+
+    content TEXT NOT NULL,
+
+    is_hidden INTEGER NOT NULL DEFAULT 0,
+
+    created_at TEXT NOT NULL DEFAULT
+        CURRENT_TIMESTAMP,
+
+    updated_at TEXT,
+
+    FOREIGN KEY(post_id)
+        REFERENCES posts(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY(user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+
+);
+`);
+
+
+/* =========================================
+   ADMIN LOGS
+========================================= */
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS admin_logs (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    admin_id INTEGER,
+
+    action TEXT NOT NULL,
+
+    target_type TEXT,
+
+    target_id INTEGER,
+
+    details TEXT,
+
+    created_at TEXT NOT NULL DEFAULT
+        CURRENT_TIMESTAMP,
+
+    FOREIGN KEY(admin_id)
+        REFERENCES users(id)
+        ON DELETE SET NULL
+
+);
+`);
+
+
+/* =========================================
+   USERNAME
+========================================= */
 
 function getUserById(id) {
+
     return db
-        .prepare(
-            "SELECT * FROM users WHERE id = ?"
-        )
+        .prepare(`
+            SELECT *
+            FROM users
+            WHERE id = ?
+            LIMIT 1
+        `)
         .get(id);
 }
 
+
+/* =========================================
+   EMAIL
+========================================= */
+
 function getUserByEmail(email) {
+
     return db
-        .prepare(
-            "SELECT * FROM users WHERE email = ?"
-        )
+        .prepare(`
+            SELECT *
+            FROM users
+            WHERE LOWER(email) = LOWER(?)
+            LIMIT 1
+        `)
         .get(email);
 }
 
-function createPost(data) {
-    const result = db.prepare(`
-        INSERT INTO posts (
-            user_id,
-            title,
-            description,
-            media_type,
-            media_url,
-            thumbnail_url
-        )
-        VALUES (
-            @user_id,
-            @title,
-            @description,
-            @media_type,
-            @media_url,
-            @thumbnail_url
-        )
-    `).run({
-        user_id: data.user_id,
-        title: data.title,
-        description: data.description || "",
-        media_type: data.media_type,
-        media_url: data.media_url,
-        thumbnail_url: data.thumbnail_url || ""
-    });
 
-    return db
-        .prepare(
-            "SELECT * FROM posts WHERE id = ?"
+/* =========================================
+   CREATE USER
+========================================= */
+
+function createUser(data) {
+
+    const id =
+        data.id !== undefined
+            ? Number(data.id)
+            : undefined;
+
+    const username =
+        String(
+            data.username || ""
         )
-        .get(result.lastInsertRowid);
+        .trim();
+
+    const email =
+        String(
+            data.email || ""
+        )
+        .trim()
+        .toLowerCase();
+
+    const passwordHash =
+        String(
+            data.passwordHash || ""
+        );
+
+    const role =
+        data.role === "owner"
+            ? "owner"
+            : data.role === "admin"
+                ? "admin"
+                : "user";
+
+
+    if (!username) {
+        throw new Error(
+            "Username is required."
+        );
+    }
+
+    if (!email) {
+        throw new Error(
+            "Email is required."
+        );
+    }
+
+    if (!passwordHash) {
+        throw new Error(
+            "Password hash is required."
+        );
+    }
+
+
+    let result;
+
+
+    if (id !== undefined) {
+
+        result =
+            db.prepare(`
+                INSERT INTO users
+                (
+                    id,
+                    username,
+                    email,
+                    password_hash,
+                    role
+                )
+                VALUES
+                (?, ?, ?, ?, ?)
+            `)
+            .run(
+                id,
+                username,
+                email,
+                passwordHash,
+                role
+            );
+
+    } else {
+
+        result =
+            db.prepare(`
+                INSERT INTO users
+                (
+                    username,
+                    email,
+                    password_hash,
+                    role
+                )
+                VALUES
+                (?, ?, ?, ?)
+            `)
+            .run(
+                username,
+                email,
+                passwordHash,
+                role
+            );
+
+    }
+
+
+    return getUserById(
+        id !== undefined
+            ? id
+            : result.lastInsertRowid
+    );
 }
 
-function getPost(id) {
-    return db
-        .prepare(
-            "SELECT * FROM posts WHERE id = ?"
-        )
-        .get(id);
-}
 
-function getPosts(limit = 50, offset = 0) {
+/* =========================================
+   POSTS
+========================================= */
+
+function getPosts(
+    limit = 50,
+    offset = 0,
+    includeHidden = false
+) {
+
+    limit =
+        Math.min(
+            Math.max(
+                Number(limit) || 50,
+                1
+            ),
+            200
+        );
+
+    offset =
+        Math.max(
+            Number(offset) || 0,
+            0
+        );
+
+
+    if (includeHidden) {
+
+        return db
+            .prepare(`
+                SELECT
+                    posts.*,
+                    users.username AS author_name
+                FROM posts
+
+                LEFT JOIN users
+                    ON users.id = posts.user_id
+
+                ORDER BY posts.id DESC
+
+                LIMIT ?
+                OFFSET ?
+            `)
+            .all(
+                limit,
+                offset
+            );
+
+    }
+
+
     return db
         .prepare(`
             SELECT
                 posts.*,
-                users.username,
-                users.avatar
+                users.username AS author_name
             FROM posts
-            JOIN users
+
+            LEFT JOIN users
                 ON users.id = posts.user_id
+
             WHERE posts.status = 'published'
-            ORDER BY posts.created_at DESC
+
+            ORDER BY posts.id DESC
+
             LIMIT ?
             OFFSET ?
         `)
-        .all(limit, offset);
+        .all(
+            limit,
+            offset
+        );
 }
 
-function updatePost(id, data) {
+
+/* =========================================
+   SINGLE POST
+========================================= */
+
+function getPost(id) {
+
+    return db
+        .prepare(`
+            SELECT
+                posts.*,
+                users.username AS author_name
+            FROM posts
+
+            LEFT JOIN users
+                ON users.id = posts.user_id
+
+            WHERE posts.id = ?
+
+            LIMIT 1
+        `)
+        .get(id);
+}
+
+
+/* =========================================
+   CREATE POST
+========================================= */
+
+function createPost(data) {
+
+    const result =
+        db.prepare(`
+            INSERT INTO posts
+            (
+                user_id,
+                title,
+                description,
+                media_url,
+                thumbnail_url,
+                media_type,
+                status
+            )
+            VALUES
+            (?, ?, ?, ?, ?, ?, ?)
+        `)
+        .run(
+
+            data.user_id || null,
+
+            String(
+                data.title || ""
+            ).trim(),
+
+            String(
+                data.description || ""
+            ).trim(),
+
+            String(
+                data.media_url || ""
+            ).trim(),
+
+            String(
+                data.thumbnail_url || ""
+            ).trim(),
+
+            data.media_type === "video"
+                ? "video"
+                : "image",
+
+            data.status === "draft"
+                ? "draft"
+                : data.status === "hidden"
+                    ? "hidden"
+                    : "published"
+
+        );
+
+
+    return getPost(
+        result.lastInsertRowid
+    );
+}
+
+
+/* =========================================
+   UPDATE POST
+========================================= */
+
+function updatePost(
+    id,
+    data
+) {
+
+    const allowed = [
+
+        "title",
+
+        "description",
+
+        "media_url",
+
+        "thumbnail_url",
+
+        "media_type",
+
+        "status",
+
+        "views",
+
+        "likes"
+
+    ];
+
+
+    const fields = [];
+
+    const values = [];
+
+
+    for (
+        const field of allowed
+    ) {
+
+        if (
+            Object.prototype
+                .hasOwnProperty
+                .call(
+                    data,
+                    field
+                )
+        ) {
+
+            fields.push(
+                `${field} = ?`
+            );
+
+            values.push(
+                data[field]
+            );
+
+        }
+
+    }
+
+
+    if (
+        fields.length === 0
+    ) {
+
+        return getPost(id);
+
+    }
+
+
+    fields.push(
+        "updated_at = CURRENT_TIMESTAMP"
+    );
+
+
+    values.push(id);
+
+
     db.prepare(`
         UPDATE posts
+
         SET
-            title = COALESCE(?, title),
-            description = COALESCE(?, description),
-            media_type = COALESCE(?, media_type),
-            media_url = COALESCE(?, media_url),
-            thumbnail_url = COALESCE(?, thumbnail_url),
-            views = COALESCE(?, views),
-            likes = COALESCE(?, likes),
-            status = COALESCE(?, status),
-            updated_at = CURRENT_TIMESTAMP
+            ${fields.join(", ")}
+
         WHERE id = ?
-    `).run(
-        data.title ?? null,
-        data.description ?? null,
-        data.media_type ?? null,
-        data.media_url ?? null,
-        data.thumbnail_url ?? null,
-        data.views ?? null,
-        data.likes ?? null,
-        data.status ?? null,
-        id
+    `)
+    .run(
+        ...values
     );
+
 
     return getPost(id);
 }
 
+
+/* =========================================
+   DELETE POST
+========================================= */
+
 function deletePost(id) {
+
     return db
-        .prepare(
-            "DELETE FROM posts WHERE id = ?"
-        )
+        .prepare(`
+            DELETE FROM posts
+            WHERE id = ?
+        `)
         .run(id);
 }
 
-function addView({
-    userId = null,
-    postId,
-    ipHash = ""
-}) {
-    const transaction = db.transaction(() => {
 
-        db.prepare(`
-            INSERT INTO views (
-                user_id,
-                post_id,
-                ip_hash
-            )
-            VALUES (?, ?, ?)
-        `).run(
-            userId,
-            postId,
-            ipHash
-        );
+/* =========================================
+   COUPONS
+========================================= */
 
-        db.prepare(`
-            UPDATE posts
-            SET views = views + 1
-            WHERE id = ?
-        `).run(postId);
-    });
-
-    transaction();
-}
-
-function likePost(userId, postId) {
-
-    const transaction = db.transaction(() => {
-
-        const exists = db
-            .prepare(`
-                SELECT id
-                FROM likes
-                WHERE user_id = ?
-                AND post_id = ?
-            `)
-            .get(
-                userId,
-                postId
-            );
-
-        if (exists) {
-            return false;
-        }
-
-        db.prepare(`
-            INSERT INTO likes (
-                user_id,
-                post_id
-            )
-            VALUES (?, ?)
-        `).run(
-            userId,
-            postId
-        );
-
-        db.prepare(`
-            UPDATE posts
-            SET likes = likes + 1
-            WHERE id = ?
-        `).run(postId);
-
-        return true;
-    });
-
-    return transaction();
-}
-
-function unlikePost(userId, postId) {
-
-    const transaction = db.transaction(() => {
-
-        const result = db
-            .prepare(`
-                DELETE FROM likes
-                WHERE user_id = ?
-                AND post_id = ?
-            `)
-            .run(
-                userId,
-                postId
-            );
-
-        if (result.changes === 0) {
-            return false;
-        }
-
-        db.prepare(`
-            UPDATE posts
-            SET likes =
-                CASE
-                    WHEN likes > 0
-                    THEN likes - 1
-                    ELSE 0
-                END
-            WHERE id = ?
-        `).run(postId);
-
-        return true;
-    });
-
-    return transaction();
-}
-
-function addComment(
-    userId,
-    postId,
-    content
-) {
-
-    const result = db.prepare(`
-        INSERT INTO comments (
-            user_id,
-            post_id,
-            content
-        )
-        VALUES (?, ?, ?)
-    `).run(
-        userId,
-        postId,
-        content
-    );
-
-    db.prepare(`
-        UPDATE posts
-        SET comments_count =
-            comments_count + 1
-        WHERE id = ?
-    `).run(postId);
+function getCoupons() {
 
     return db
-        .prepare(
-            "SELECT * FROM comments WHERE id = ?"
-        )
-        .get(result.lastInsertRowid);
+        .prepare(`
+            SELECT *
+            FROM coupons
+            ORDER BY id DESC
+        `)
+        .all();
 }
 
-function getComments(
-    postId,
-    limit = 100
+
+function createCoupon(
+    code,
+    value,
+    maxUses,
+    expiresAt = null
+) {
+
+    const result =
+        db.prepare(`
+            INSERT INTO coupons
+            (
+                code,
+                value,
+                max_uses,
+                expires_at
+            )
+            VALUES
+            (?, ?, ?, ?)
+        `)
+        .run(
+            code,
+            value,
+            maxUses,
+            expiresAt
+        );
+
+
+    return db
+        .prepare(`
+            SELECT *
+            FROM coupons
+            WHERE id = ?
+        `)
+        .get(
+            result.lastInsertRowid
+        );
+}
+
+
+function deleteCoupon(id) {
+
+    return db
+        .prepare(`
+            DELETE FROM coupons
+            WHERE id = ?
+        `)
+        .run(id);
+}
+
+
+/* =========================================
+   SETTINGS
+========================================= */
+
+function getSettings() {
+
+    return db
+        .prepare(`
+            SELECT *
+            FROM settings
+            WHERE id = 1
+        `)
+        .get();
+}
+
+
+function updateSettings(
+    data
+) {
+
+    const allowed = [
+
+        "site_name",
+
+        "site_description",
+
+        "logo_url",
+
+        "favicon_url",
+
+        "primary_color",
+
+        "secondary_color",
+
+        "background_color",
+
+        "card_color",
+
+        "text_color",
+
+        "accent_color",
+
+        "allow_register",
+
+        "allow_comments",
+
+        "allow_likes",
+
+        "show_videos",
+
+        "show_images",
+
+        "show_search",
+
+        "show_community",
+
+        "maintenance_mode"
+
+    ];
+
+
+    const fields = [];
+
+    const values = [];
+
+
+    for (
+        const field of allowed
+    ) {
+
+        if (
+            Object.prototype
+                .hasOwnProperty
+                .call(
+                    data,
+                    field
+                )
+        ) {
+
+            fields.push(
+                `${field} = ?`
+            );
+
+            values.push(
+                data[field]
+            );
+
+        }
+
+    }
+
+
+    if (
+        fields.length > 0
+    ) {
+
+        db.prepare(`
+            UPDATE settings
+
+            SET
+                ${fields.join(", ")}
+
+            WHERE id = 1
+        `)
+        .run(
+            ...values
+        );
+
+    }
+
+
+    return getSettings();
+}
+
+
+/* =========================================
+   USERS
+========================================= */
+
+function getUsers(
+    limit = 200,
+    offset = 0
 ) {
 
     return db
         .prepare(`
             SELECT
-                comments.*,
-                users.username,
-                users.avatar
-            FROM comments
-            JOIN users
-                ON users.id = comments.user_id
-            WHERE comments.post_id = ?
-            AND comments.is_deleted = 0
-            ORDER BY comments.created_at DESC
+                id,
+                username,
+                email,
+                role,
+                avatar,
+                bio,
+                is_active,
+                created_at
+            FROM users
+
+            ORDER BY id DESC
+
             LIMIT ?
+            OFFSET ?
         `)
         .all(
-            postId,
-            limit
+            limit,
+            offset
         );
 }
 
-function createCoupon(
-    code,
-    value,
-    maxUses = 1,
-    expiresAt = null
+
+/* =========================================
+   UPDATE USER
+========================================= */
+
+function updateUser(
+    id,
+    data
 ) {
 
-    const result = db.prepare(`
-        INSERT INTO coupons (
-            code,
-            value,
-            max_uses,
-            expires_at
-        )
-        VALUES (?, ?, ?, ?)
-    `).run(
-        code.toUpperCase(),
-        value,
-        maxUses,
-        expiresAt
+    const allowed = [
+
+        "username",
+
+        "avatar",
+
+        "bio",
+
+        "role",
+
+        "is_active"
+
+    ];
+
+
+    const fields = [];
+
+    const values = [];
+
+
+    for (
+        const field of allowed
+    ) {
+
+        if (
+            Object.prototype
+                .hasOwnProperty
+                .call(
+                    data,
+                    field
+                )
+        ) {
+
+            fields.push(
+                `${field} = ?`
+            );
+
+            values.push(
+                data[field]
+            );
+
+        }
+
+    }
+
+
+    if (
+        fields.length === 0
+    ) {
+
+        return getUserById(id);
+
+    }
+
+
+    values.push(id);
+
+
+    db.prepare(`
+        UPDATE users
+
+        SET
+            ${fields.join(", ")}
+
+        WHERE id = ?
+    `)
+    .run(
+        ...values
     );
 
-    return db
-        .prepare(
-            "SELECT * FROM coupons WHERE id = ?"
-        )
-        .get(result.lastInsertRowid);
+
+    return getUserById(id);
 }
 
-function deleteCoupon(id) {
+
+/* =========================================
+   DELETE USER
+========================================= */
+
+function deleteUser(id) {
+
     return db
-        .prepare(
-            "DELETE FROM coupons WHERE id = ?"
-        )
+        .prepare(`
+            DELETE FROM users
+            WHERE id = ?
+            AND id != 111111111
+        `)
         .run(id);
 }
 
-function getCoupons() {
-    return db
-        .prepare(`
-            SELECT *
+
+/* =========================================
+   DASHBOARD STATISTICS
+========================================= */
+
+function getDashboardStats() {
+
+    const users =
+        db.prepare(`
+            SELECT COUNT(*) AS count
+            FROM users
+        `).get().count;
+
+
+    const posts =
+        db.prepare(`
+            SELECT COUNT(*) AS count
+            FROM posts
+        `).get().count;
+
+
+    const videos =
+        db.prepare(`
+            SELECT COUNT(*) AS count
+            FROM posts
+            WHERE media_type = 'video'
+        `).get().count;
+
+
+    const images =
+        db.prepare(`
+            SELECT COUNT(*) AS count
+            FROM posts
+            WHERE media_type = 'image'
+        `).get().count;
+
+
+    const likes =
+        db.prepare(`
+            SELECT COALESCE(
+                SUM(likes),
+                0
+            ) AS total
+            FROM posts
+        `).get().total;
+
+
+    const views =
+        db.prepare(`
+            SELECT COALESCE(
+                SUM(views),
+                0
+            ) AS total
+            FROM posts
+        `).get().total;
+
+
+    const coupons =
+        db.prepare(`
+            SELECT COUNT(*) AS count
             FROM coupons
-            ORDER BY created_at DESC
-        `)
-        .all();
+            WHERE is_active = 1
+        `).get().count;
+
+
+    const comments =
+        db.prepare(`
+            SELECT COUNT(*) AS count
+            FROM comments
+        `).get().count;
+
+
+    return {
+
+        users,
+
+        posts,
+
+        videos,
+
+        images,
+
+        likes,
+
+        views,
+
+        coupons,
+
+        comments
+
+    };
 }
 
-function getSettings() {
-    return db
-        .prepare(
-            "SELECT * FROM site_settings WHERE id = 1"
-        )
-        .get();
-}
 
-function updateSettings(data) {
+/* =========================================
+   ADMIN LOG
+========================================= */
 
-    db.prepare(`
-        UPDATE site_settings
-        SET
-            site_name = COALESCE(?, site_name),
-            primary_color = COALESCE(?, primary_color),
-            secondary_color = COALESCE(?, secondary_color),
-            background_color = COALESCE(?, background_color),
-            card_color = COALESCE(?, card_color),
-            show_search = COALESCE(?, show_search),
-            show_videos = COALESCE(?, show_videos),
-            show_images = COALESCE(?, show_images),
-            show_community = COALESCE(?, show_community),
-            allow_register = COALESCE(?, allow_register),
-            allow_comments = COALESCE(?, allow_comments),
-            allow_likes = COALESCE(?, allow_likes),
-            maintenance_mode = COALESCE(?, maintenance_mode)
-        WHERE id = 1
-    `).run(
-        data.site_name ?? null,
-        data.primary_color ?? null,
-        data.secondary_color ?? null,
-        data.background_color ?? null,
-        data.card_color ?? null,
-        data.show_search ?? null,
-        data.show_videos ?? null,
-        data.show_images ?? null,
-        data.show_community ?? null,
-        data.allow_register ?? null,
-        data.allow_comments ?? null,
-        data.allow_likes ?? null,
-        data.maintenance_mode ?? null
-    );
+function createAdminLog(
+    data
+) {
 
-    return getSettings();
-}
-
-function createAdminLog({
-    adminId,
-    action,
-    targetType = "",
-    targetId = "",
-    details = ""
-}) {
-
-    db.prepare(`
-        INSERT INTO admin_logs (
+    return db.prepare(`
+        INSERT INTO admin_logs
+        (
             admin_id,
             action,
             target_type,
             target_id,
             details
         )
-        VALUES (?, ?, ?, ?, ?)
-    `).run(
-        adminId,
-        action,
-        targetType,
-        String(targetId),
-        details
+        VALUES
+        (?, ?, ?, ?, ?)
+    `)
+    .run(
+
+        data.adminId || null,
+
+        data.action || "",
+
+        data.targetType || null,
+
+        data.targetId || null,
+
+        data.details || null
+
     );
 }
 
-function getDashboardStats() {
 
-    const users =
-        db
-            .prepare(
-                "SELECT COUNT(*) AS count FROM users"
-            )
-            .get().count;
+function getAdminLogs(
+    limit = 500
+) {
 
-    const posts =
-        db
-            .prepare(
-                "SELECT COUNT(*) AS count FROM posts"
-            )
-            .get().count;
+    return db
+        .prepare(`
+            SELECT
+                admin_logs.*,
 
-    const views =
-        db
-            .prepare(
-                "SELECT COALESCE(SUM(views),0) AS count FROM posts"
-            )
-            .get().count;
+                users.username
+                    AS admin_name
 
-    const likes =
-        db
-            .prepare(
-                "SELECT COALESCE(SUM(likes),0) AS count FROM posts"
-            )
-            .get().count;
+            FROM admin_logs
 
-    const comments =
-        db
-            .prepare(
-                "SELECT COALESCE(SUM(comments_count),0) AS count FROM posts"
-            )
-            .get().count;
+            LEFT JOIN users
+                ON users.id =
+                    admin_logs.admin_id
 
-    return {
-        users,
-        posts,
-        views,
-        likes,
-        comments
-    };
+            ORDER BY
+                admin_logs.id DESC
+
+            LIMIT ?
+        `)
+        .all(
+            limit
+        );
 }
 
+
+/* =========================================
+   LIKE POST
+========================================= */
+
+function likePost(
+    postId,
+    userId
+) {
+
+    try {
+
+        db.prepare(`
+            INSERT INTO post_likes
+            (
+                post_id,
+                user_id
+            )
+            VALUES
+            (?, ?)
+        `)
+        .run(
+            postId,
+            userId
+        );
+
+
+        db.prepare(`
+            UPDATE posts
+
+            SET likes =
+                likes + 1
+
+            WHERE id = ?
+        `)
+        .run(
+            postId
+        );
+
+
+        return true;
+
+    } catch {
+
+        return false;
+
+    }
+}
+
+
+/* =========================================
+   UNLIKE POST
+========================================= */
+
+function unlikePost(
+    postId,
+    userId
+) {
+
+    const result =
+        db.prepare(`
+            DELETE FROM post_likes
+
+            WHERE
+                post_id = ?
+                AND user_id = ?
+        `)
+        .run(
+            postId,
+            userId
+        );
+
+
+    if (
+        result.changes > 0
+    ) {
+
+        db.prepare(`
+            UPDATE posts
+
+            SET likes =
+                CASE
+                    WHEN likes > 0
+                    THEN likes - 1
+                    ELSE 0
+                END
+
+            WHERE id = ?
+        `)
+        .run(
+            postId
+        );
+
+
+        return true;
+    }
+
+
+    return false;
+}
+
+
+/* =========================================
+   VIEW POST
+========================================= */
+
+function addView(
+    postId,
+    userId = null,
+    visitorKey = null
+) {
+
+    db.prepare(`
+        INSERT INTO post_views
+        (
+            post_id,
+            user_id,
+            visitor_key
+        )
+        VALUES
+        (?, ?, ?)
+    `)
+    .run(
+        postId,
+        userId,
+        visitorKey
+    );
+
+
+    db.prepare(`
+        UPDATE posts
+
+        SET views =
+            views + 1
+
+        WHERE id = ?
+    `)
+    .run(
+        postId
+    );
+
+
+    return true;
+}
+
+
+/* =========================================
+   EXPORTS
+========================================= */
+
 module.exports = {
+
     db,
-    generateUserId,
-    createUser,
+
     getUserById,
+
     getUserByEmail,
-    createPost,
-    getPost,
+
+    createUser,
+
     getPosts,
+
+    getPost,
+
+    createPost,
+
     updatePost,
+
     deletePost,
-    addView,
-    likePost,
-    unlikePost,
-    addComment,
-    getComments,
-    createCoupon,
-    deleteCoupon,
+
     getCoupons,
+
+    createCoupon,
+
+    deleteCoupon,
+
     getSettings,
+
     updateSettings,
+
+    getUsers,
+
+    updateUser,
+
+    deleteUser,
+
+    getDashboardStats,
+
     createAdminLog,
-    getDashboardStats
+
+    getAdminLogs,
+
+    likePost,
+
+    unlikePost,
+
+    addView
+
 };
