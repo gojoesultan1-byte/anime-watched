@@ -1,0 +1,4096 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Anime World — Admin</title>
+
+<style>
+*{
+box-sizing:border-box;
+margin:0;
+padding:0
+}
+
+:root{
+--bg:#07070b;
+--panel:#101017;
+--panel2:#15151e;
+--border:rgba(255,255,255,.08);
+--text:#fff;
+--muted:#9999a8;
+--primary:#7c3aed;
+--primary2:#a855f7;
+--danger:#ef4444;
+--success:#22c55e;
+--warning:#f59e0b;
+}
+
+body{
+background:var(--bg);
+color:var(--text);
+font-family:Arial,Tahoma,sans-serif;
+min-height:100vh
+}
+
+button,
+input,
+textarea,
+select{
+font:inherit
+}
+
+button{
+cursor:pointer
+}
+
+.hidden{
+display:none!important
+}
+
+/* LOGIN */
+
+.admin-login{
+min-height:100vh;
+display:grid;
+place-items:center;
+padding:20px;
+background:
+radial-gradient(
+circle at 50% 0%,
+rgba(124,58,237,.22),
+transparent 40%
+)
+}
+
+.login-box{
+width:min(430px,100%);
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:24px;
+padding:30px;
+box-shadow:0 30px 100px rgba(0,0,0,.5)
+}
+
+.admin-logo{
+width:65px;
+height:65px;
+display:grid;
+place-items:center;
+margin:0 auto 20px;
+border-radius:20px;
+font-size:30px;
+background:
+linear-gradient(
+135deg,
+var(--primary),
+var(--primary2)
+)
+}
+
+.login-title{
+text-align:center;
+font-size:25px;
+font-weight:900;
+margin-bottom:8px
+}
+
+.login-description{
+text-align:center;
+font-size:12px;
+color:var(--muted);
+margin-bottom:25px;
+line-height:1.7
+}
+
+.form-group{
+margin-bottom:15px
+}
+
+.form-group label{
+display:block;
+font-size:12px;
+font-weight:800;
+color:#ccc;
+margin-bottom:7px
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+width:100%;
+height:46px;
+border-radius:12px;
+border:1px solid var(--border);
+background:rgba(255,255,255,.04);
+color:#fff;
+outline:none;
+padding:0 13px
+}
+
+.form-group textarea{
+height:120px;
+padding:13px;
+resize:vertical
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{
+border-color:var(--primary2)
+}
+
+.login-submit{
+width:100%;
+height:48px;
+border:0;
+border-radius:13px;
+background:
+linear-gradient(
+135deg,
+var(--primary),
+var(--primary2)
+);
+color:#fff;
+font-weight:900
+}
+
+.login-error{
+color:#f87171;
+font-size:11px;
+text-align:center;
+margin-top:12px;
+min-height:15px
+}
+
+/* ADMIN */
+
+.admin{
+display:none;
+min-height:100vh
+}
+
+.admin.active{
+display:flex
+}
+
+/* SIDEBAR */
+
+.admin-sidebar{
+width:250px;
+min-height:100vh;
+position:fixed;
+right:0;
+top:0;
+bottom:0;
+background:#0b0b11;
+border-left:1px solid var(--border);
+padding:18px 12px;
+overflow-y:auto
+}
+
+.admin-brand{
+display:flex;
+align-items:center;
+gap:10px;
+padding:10px;
+margin-bottom:25px
+}
+
+.admin-brand-icon{
+width:43px;
+height:43px;
+display:grid;
+place-items:center;
+border-radius:13px;
+background:
+linear-gradient(
+135deg,
+var(--primary),
+var(--primary2)
+)
+}
+
+.admin-brand strong{
+font-size:15px
+}
+
+.admin-brand small{
+display:block;
+font-size:9px;
+color:var(--muted);
+margin-top:3px
+}
+
+.menu-title{
+font-size:10px;
+font-weight:900;
+color:#777;
+padding:10px 12px
+}
+
+.menu-item{
+width:100%;
+height:45px;
+border:0;
+background:transparent;
+color:#aaa;
+border-radius:11px;
+display:flex;
+align-items:center;
+gap:11px;
+padding:0 13px;
+margin-bottom:4px;
+text-align:right
+}
+
+.menu-item:hover{
+background:rgba(255,255,255,.05);
+color:#fff
+}
+
+.menu-item.active{
+background:rgba(124,58,237,.15);
+color:#fff;
+box-shadow:
+inset -3px 0 var(--primary2)
+}
+
+.menu-icon{
+width:24px;
+text-align:center
+}
+
+.logout{
+color:#f87171
+}
+
+/* MAIN */
+
+.admin-main{
+width:calc(100% - 250px);
+margin-right:250px;
+padding:22px
+}
+
+.topbar{
+height:65px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:15px;
+margin-bottom:20px
+}
+
+.page-title{
+font-size:25px;
+font-weight:900
+}
+
+.page-subtitle{
+font-size:11px;
+color:var(--muted);
+margin-top:5px
+}
+
+.admin-user{
+display:flex;
+align-items:center;
+gap:10px
+}
+
+.admin-avatar{
+width:42px;
+height:42px;
+border-radius:50%;
+display:grid;
+place-items:center;
+background:
+linear-gradient(
+135deg,
+var(--primary),
+var(--primary2)
+);
+font-weight:900
+}
+
+/* PAGES */
+
+.admin-page{
+display:none
+}
+
+.admin-page.active{
+display:block
+}
+
+/* STATS */
+
+.stats{
+display:grid;
+grid-template-columns:
+repeat(4,minmax(0,1fr));
+gap:13px;
+margin-bottom:20px
+}
+
+.stat{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:18px;
+padding:20px
+}
+
+.stat-top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:14px
+}
+
+.stat-icon{
+width:40px;
+height:40px;
+display:grid;
+place-items:center;
+border-radius:12px;
+background:rgba(124,58,237,.13)
+}
+
+.stat-label{
+font-size:11px;
+color:var(--muted)
+}
+
+.stat-value{
+font-size:26px;
+font-weight:900
+}
+
+.stat-change{
+font-size:10px;
+color:var(--success);
+margin-top:7px
+}
+
+/* PANEL */
+
+.panel{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:18px;
+margin-bottom:18px;
+overflow:hidden
+}
+
+.panel-head{
+min-height:62px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+padding:13px 17px;
+border-bottom:1px solid var(--border)
+}
+
+.panel-title{
+font-size:15px;
+font-weight:900
+}
+
+.panel-description{
+font-size:10px;
+color:var(--muted);
+margin-top:4px
+}
+
+.panel-body{
+padding:17px
+}
+
+/* BUTTONS */
+
+.btn{
+height:40px;
+padding:0 15px;
+border:0;
+border-radius:10px;
+font-size:11px;
+font-weight:800
+}
+
+.btn-primary{
+background:
+linear-gradient(
+135deg,
+var(--primary),
+var(--primary2)
+);
+color:#fff
+}
+
+.btn-danger{
+background:rgba(239,68,68,.12);
+color:#f87171;
+border:1px solid rgba(239,68,68,.2)
+}
+
+.btn-success{
+background:rgba(34,197,94,.1);
+color:#4ade80;
+border:1px solid rgba(34,197,94,.2)
+}
+
+.btn-secondary{
+background:rgba(255,255,255,.05);
+color:#ddd;
+border:1px solid var(--border)
+}
+
+/* TABLE */
+
+.table-wrap{
+overflow-x:auto
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+min-width:700px
+}
+
+th{
+text-align:right;
+font-size:10px;
+color:#777;
+padding:13px;
+border-bottom:1px solid var(--border)
+}
+
+td{
+padding:13px;
+border-bottom:1px solid var(--border);
+font-size:11px;
+color:#ccc
+}
+
+tr:last-child td{
+border-bottom:0
+}
+
+.post-mini{
+display:flex;
+align-items:center;
+gap:10px
+}
+
+.post-image{
+width:48px;
+height:38px;
+object-fit:cover;
+border-radius:8px
+}
+
+.badge{
+display:inline-flex;
+padding:5px 8px;
+border-radius:7px;
+font-size:9px;
+font-weight:800
+}
+
+.badge-green{
+background:rgba(34,197,94,.1);
+color:#4ade80
+}
+
+.badge-red{
+background:rgba(239,68,68,.1);
+color:#f87171
+}
+
+.badge-purple{
+background:rgba(124,58,237,.12);
+color:#c084fc
+}
+
+.actions{
+display:flex;
+gap:5px;
+flex-wrap:wrap
+}
+
+/* FORM GRID */
+
+.form-grid{
+display:grid;
+grid-template-columns:
+repeat(2,minmax(0,1fr));
+gap:15px
+}
+
+.form-full{
+grid-column:1/-1
+}
+
+/* SETTINGS */
+
+.setting{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:20px;
+padding:16px 0;
+border-bottom:1px solid var(--border)
+}
+
+.setting:last-child{
+border-bottom:0
+}
+
+.setting-title{
+font-size:12px;
+font-weight:800
+}
+
+.setting-description{
+font-size:10px;
+color:var(--muted);
+margin-top:4px;
+line-height:1.6
+}
+
+.switch{
+position:relative;
+width:48px;
+height:26px;
+flex:0 0 auto
+}
+
+.switch input{
+display:none
+}
+
+.slider{
+position:absolute;
+inset:0;
+background:#333;
+border-radius:99px;
+transition:.2s
+}
+
+.slider:before{
+content:"";
+position:absolute;
+width:20px;
+height:20px;
+right:3px;
+top:3px;
+background:#fff;
+border-radius:50%;
+transition:.2s
+}
+
+.switch input:checked + .slider{
+background:var(--primary)
+}
+
+.switch input:checked + .slider:before{
+transform:translateX(-22px)
+}
+
+/* COLOR */
+
+.color-grid{
+display:grid;
+grid-template-columns:
+repeat(4,minmax(0,1fr));
+gap:12px
+}
+
+.color-box{
+display:flex;
+align-items:center;
+gap:8px
+}
+
+.color-box input{
+width:45px;
+height:38px;
+padding:2px;
+border:1px solid var(--border);
+background:transparent;
+border-radius:9px
+}
+
+/* COUPONS */
+
+.coupon{
+display:grid;
+grid-template-columns:1fr 1fr 1fr auto;
+align-items:center;
+gap:12px;
+padding:14px 0;
+border-bottom:1px solid var(--border)
+}
+
+.coupon:last-child{
+border-bottom:0
+}
+
+.coupon-code{
+font-weight:900;
+letter-spacing:1px
+}
+
+.coupon-value{
+color:#c084fc;
+font-weight:800
+}
+
+/* MODAL */
+
+.modal{
+position:fixed;
+inset:0;
+z-index:9999;
+display:none;
+place-items:center;
+padding:20px;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(10px)
+}
+
+.modal.open{
+display:grid
+}
+
+.modal-box{
+width:min(650px,100%);
+max-height:90vh;
+overflow:auto;
+background:#111119;
+border:1px solid var(--border);
+border-radius:20px;
+padding:22px
+}
+
+.modal-head{
+display:flex;
+align-items:center;
+justify-content:space-between;
+margin-bottom:20px
+}
+
+.close{
+width:38px;
+height:38px;
+border:0;
+border-radius:10px;
+background:rgba(255,255,255,.06);
+color:#fff;
+font-size:20px
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1000px){
+
+.stats{
+grid-template-columns:
+repeat(2,minmax(0,1fr))
+}
+
+.color-grid{
+grid-template-columns:
+repeat(2,minmax(0,1fr))
+}
+
+}
+
+@media(max-width:750px){
+
+.admin-sidebar{
+width:70px;
+padding:10px 7px
+}
+
+.admin-brand{
+justify-content:center
+}
+
+.admin-brand div:not(.admin-brand-icon){
+display:none
+}
+
+.menu-title{
+display:none
+}
+
+.menu-item{
+justify-content:center;
+padding:0
+}
+
+.menu-item span:last-child{
+display:none
+}
+
+.admin-main{
+width:calc(100% - 70px);
+margin-right:70px;
+padding:12px
+}
+
+.topbar{
+height:auto;
+padding:10px 0
+}
+
+.page-title{
+font-size:20px
+}
+
+.form-grid{
+grid-template-columns:1fr
+}
+
+.form-full{
+grid-column:auto
+}
+
+.coupon{
+grid-template-columns:1fr 1fr
+}
+
+}
+
+@media(max-width:500px){
+
+.stats{
+grid-template-columns:1fr
+}
+
+.color-grid{
+grid-template-columns:1fr
+}
+
+.admin-user{
+display:none
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- ADMIN LOGIN -->
+
+<section
+id="adminLogin"
+class="admin-login">
+
+<div class="login-box">
+
+<div class="admin-logo">
+🔐
+</div>
+
+<div class="login-title">
+لوحة المشرف
+</div>
+
+<div class="login-description">
+هذه المنطقة مخصصة للمشرف فقط.
+<br>
+سيتم ربطها بنظام المصادقة الآمن في الـBackend.
+</div>
+
+<form id="adminLoginForm">
+
+<div class="form-group">
+
+<label>
+معرّف المشرف
+</label>
+
+<input
+id="adminId"
+type="text"
+inputmode="numeric"
+maxlength="9"
+placeholder="أدخل ID المشرف"
+required>
+
+</div>
+
+<div class="form-group">
+
+<label>
+كلمة مرور لوحة المشرف
+</label>
+
+<input
+id="adminPassword"
+type="password"
+placeholder="••••••••"
+required>
+
+</div>
+
+<button
+class="login-submit"
+type="submit">
+
+دخول لوحة المشرف
+
+</button>
+
+<div
+id="loginError"
+class="login-error">
+</div>
+
+</form>
+
+</div>
+
+</section>
+
+
+<!-- ADMIN APPLICATION -->
+
+<section
+id="adminApp"
+class="admin">
+
+<aside class="admin-sidebar">
+
+<div class="admin-brand">
+
+<div class="admin-brand-icon">
+⛩️
+</div>
+
+<div>
+<strong>
+Anime World
+</strong>
+
+<small>
+ADMIN CONTROL
+</small>
+</div>
+
+</div>
+
+
+<div class="menu-title">
+الإدارة
+</div>
+
+<button
+class="menu-item active"
+data-page="dashboard">
+
+<span class="menu-icon">
+📊
+</span>
+
+<span>
+لوحة التحكم
+</span>
+
+</button>
+
+
+<button
+class="menu-item"
+data-page="posts">
+
+<span class="menu-icon">
+📝
+</span>
+
+<span>
+المنشورات
+</span>
+
+</button>
+
+
+<button
+class="menu-item"
+data-page="users">
+
+<span class="menu-icon">
+👥
+</span>
+
+<span>
+المستخدمون
+</span>
+
+</button>
+
+
+<button
+class="menu-item"
+data-page="media">
+
+<span class="menu-icon">
+🎬
+</span>
+
+<span>
+الفيديوهات والصور
+</span>
+
+</button>
+
+
+<div class="menu-title">
+النظام
+</div>
+
+
+<button
+class="menu-item"
+data-page="coupons">
+
+<span class="menu-icon">
+🎟️
+</span>
+
+<span>
+القسايم
+</span>
+
+</button>
+
+
+<button
+class="menu-item"
+data-page="statistics">
+
+<span class="menu-icon">
+📈
+</span>
+
+<span>
+الإحصائيات
+</span>
+
+</button>
+
+
+<button
+class="menu-item"
+data-page="design">
+
+<span class="menu-icon">
+🎨
+</span>
+
+<span>
+تصميم الموقع
+</span>
+
+</button>
+
+
+<button
+class="menu-item"
+data-page="settings">
+
+<span class="menu-icon">
+⚙️
+</span>
+
+<span>
+الإعدادات
+</span>
+
+</button>
+
+
+<div class="menu-title">
+الحساب
+</div>
+
+
+<button
+class="menu-item logout"
+onclick="adminLogout()">
+
+<span class="menu-icon">
+🚪
+</span>
+
+<span>
+تسجيل الخروج
+</span>
+
+</button>
+
+</aside>
+
+
+<main class="admin-main">
+
+<header class="topbar">
+
+<div>
+
+<div
+id="pageTitle"
+class="page-title">
+
+لوحة التحكم
+
+</div>
+
+<div class="page-subtitle">
+
+إدارة Anime World
+
+</div>
+
+</div>
+
+<div class="admin-user">
+
+<div>
+
+<strong>
+Gojo Esultan
+</strong>
+
+<div
+style="
+font-size:9px;
+color:#888;
+margin-top:3px
+">
+
+Administrator
+
+</div>
+
+</div>
+
+<div class="admin-avatar">
+G
+</div>
+
+</div>
+
+</header>
+
+
+<!-- DASHBOARD -->
+
+<section
+class="admin-page active"
+id="page-dashboard">
+
+<div class="stats">
+
+<div class="stat">
+
+<div class="stat-top">
+
+<span class="stat-label">
+إجمالي المستخدمين
+</span>
+
+<div class="stat-icon">
+👥
+</div>
+
+</div>
+
+<div
+class="stat-value"
+id="statUsers">
+
+0
+
+</div>
+
+<div class="stat-change">
++12% هذا الشهر
+</div>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-top">
+
+<span class="stat-label">
+إجمالي المنشورات
+</span>
+
+<div class="stat-icon">
+📝
+</div>
+
+</div>
+
+<div
+class="stat-value"
+id="statPosts">
+
+0
+
+</div>
+
+<div class="stat-change">
++8% هذا الشهر
+</div>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-top">
+
+<span class="stat-label">
+إجمالي المشاهدات
+</span>
+
+<div class="stat-icon">
+👁️
+</div>
+
+</div>
+
+<div
+class="stat-value"
+id="statViews">
+
+0
+
+</div>
+
+<div class="stat-change">
++21% هذا الشهر
+</div>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-top">
+
+<span class="stat-label">
+إجمالي الإعجابات
+</span>
+
+<div class="stat-icon">
+❤️
+</div>
+
+</div>
+
+<div
+class="stat-value"
+id="statLikes">
+
+0
+
+</div>
+
+<div class="stat-change">
++17% هذا الشهر
+</div>
+
+</div>
+
+</div>
+
+
+<div class="panel">
+
+<div class="panel-head">
+
+<div>
+
+<div class="panel-title">
+آخر المنشورات
+</div>
+
+<div class="panel-description">
+آخر المحتوى الموجود على المنصة
+</div>
+
+</div>
+
+<button
+class="btn btn-primary"
+onclick="openPostModal()">
+
++ إضافة منشور
+
+</button>
+
+</div>
+
+
+<div class="panel-body">
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+المنشور
+</th>
+
+<th>
+النوع
+</th>
+
+<th>
+المشاهدات
+</th>
+
+<th>
+الإعجابات
+</th>
+
+<th>
+الحالة
+</th>
+
+<th>
+إجراءات
+</th>
+
+</tr>
+
+</thead>
+
+<tbody id="dashboardPosts">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- POSTS -->
+
+<section
+class="admin-page"
+id="page-posts">
+
+<div class="panel">
+
+<div class="panel-head">
+
+<div>
+
+<div class="panel-title">
+إدارة المنشورات
+</div>
+
+<div class="panel-description">
+إضافة وتعديل وحذف وإدارة إحصائيات المنشورات
+</div>
+
+</div>
+
+<button
+class="btn btn-primary"
+onclick="openPostModal()">
+
++ منشور جديد
+
+</button>
+
+</div>
+
+<div class="panel-body">
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+العنوان
+</th>
+
+<th>
+النوع
+</th>
+
+<th>
+المشاهدات
+</th>
+
+<th>
+الإعجابات
+</th>
+
+<th>
+الحالة
+</th>
+
+<th>
+الإجراءات
+</th>
+
+</tr>
+
+</thead>
+
+<tbody id="postsTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- USERS -->
+
+<section
+class="admin-page"
+id="page-users">
+
+<div class="panel">
+
+<div class="panel-head">
+
+<div>
+
+<div class="panel-title">
+المستخدمون
+</div>
+
+<div class="panel-description">
+إدارة الحسابات والصلاحيات
+</div>
+
+</div>
+
+<button
+class="btn btn-secondary"
+onclick="showAdminMessage('إضافة المستخدمين من الـBackend لاحقاً')">
+
++ مستخدم
+
+</button>
+
+</div>
+
+<div class="panel-body">
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+ID
+</th>
+
+<th>
+الاسم
+</th>
+
+<th>
+البريد
+</th>
+
+<th>
+الدور
+</th>
+
+<th>
+الحالة
+</th>
+
+<th>
+إجراء
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>
+111111111
+</td>
+
+<td>
+Gojo Esultan
+</td>
+
+<td>
+محمي في الخادم
+</td>
+
+<td>
+<span class="badge badge-purple">
+OWNER
+</span>
+</td>
+
+<td>
+<span class="badge badge-green">
+نشط
+</span>
+</td>
+
+<td>
+<span class="badge badge-purple">
+كامل الصلاحيات
+</span>
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+123456789
+</td>
+
+<td>
+Anime Fan
+</td>
+
+<td>
+user@example.com
+</td>
+
+<td>
+<span class="badge badge-green">
+USER
+</span>
+</td>
+
+<td>
+<span class="badge badge-green">
+نشط
+</span>
+</td>
+
+<td>
+
+<button
+class="btn btn-danger"
+onclick="showAdminMessage('سيتم تنفيذ إدارة المستخدمين من الخادم')">
+
+إدارة
+
+</button>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- MEDIA -->
+
+<section
+class="admin-page"
+id="page-media">
+
+<div class="panel">
+
+<div class="panel-head">
+
+<div>
+
+<div class="panel-title">
+الفيديوهات والصور
+</div>
+
+<div class="panel-description">
+إدارة ملفات الوسائط
+</div>
+
+</div>
+
+<button
+class="btn btn-primary"
+onclick="openPostModal()">
+
++ رفع محتوى
+
+</button>
+
+</div>
+
+<div class="panel-body">
+
+<div class="form-grid">
+
+<div class="form-group">
+
+<label>
+نوع المحتوى
+</label>
+
+<select id="mediaType">
+
+<option value="video">
+فيديو
+</option>
+
+<option value="image">
+صورة
+</option>
+
+</select>
+
+</div>
+
+<div class="form-group">
+
+<label>
+رابط الملف
+</label>
+
+<input
+id="mediaUrl"
+type="url"
+placeholder="رابط الفيديو أو الصورة">
+
+</div>
+
+<div
+class="form-group form-full">
+
+<label>
+وصف المحتوى
+</label>
+
+<textarea
+id="mediaDescription"
+placeholder="اكتب وصف المحتوى...">
+</textarea>
+
+</div>
+
+</div>
+
+<button
+class="btn btn-primary"
+onclick="saveMedia()">
+
+حفظ المحتوى
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- COUPONS -->
+
+<section
+class="admin-page"
+id="page-coupons">
+
+<div class="panel">
+
+<div class="panel-head">
+
+<div>
+
+<div class="panel-title">
+إدارة القسايم
+</div>
+
+<div class="panel-description">
+إضافة وحذف وتعديل القسايم
+</div>
+
+</div>
+
+<button
+class="btn btn-primary"
+onclick="openCouponModal()">
+
++ إضافة قسيمة
+
+</button>
+
+</div>
+
+<div
+class="panel-body"
+id="couponList">
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- STATISTICS -->
+
+<section
+class="admin-page"
+id="page-statistics">
+
+<div class="panel">
+
+<div class="panel-head">
+
+<div>
+
+<div class="panel-title">
+التحكم في الإحصائيات
+</div>
+
+<div class="panel-description">
+تعديل الأرقام الظاهرة للمستخدمين
+</div>
+
+</div>
+
+</div>
+
+<div class="panel-body">
+
+<div class="form-grid">
+
+<div class="form-group">
+
+<label>
+المشاهدات
+</label>
+
+<input
+id="globalViews"
+type="number"
+min="0"
+value="0">
+
+</div>
+
+<div class="form-group">
+
+<label>
+الإعجابات
+</label>
+
+<input
+id="globalLikes"
+type="number"
+min="0"
+value="0">
+
+</div>
+
+</div>
+
+<button
+class="btn btn-primary"
+onclick="saveStatistics()">
+
+حفظ الإحصائيات
+
+</button>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<div class="panel-head">
+
+<div>
+
+<div class="panel-title">
+إحصائيات المنشورات
+</div>
+
+<div class="panel-description">
+يمكن تعديل مشاهدات وإعجابات كل منشور
+</div>
+
+</div>
+
+</div>
+
+<div class="panel-body">
+
+<div
+id="statisticsPosts">
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- DESIGN -->
+
+<section
+class="admin-page"
+id="page-design">
+
+<div class="panel">
+
+<div class="panel-head">
+
+<div>
+
+<div class="panel-title">
+التحكم في تصميم الموقع
+</div>
+
+<div class="panel-description">
+ألوان الموقع بالكامل
+</div>
+
+</div>
+
+</div>
+
+<div class="panel-body">
+
+<div class="color-grid">
+
+<div class="color-box">
+
+<input
+id="colorPrimary"
+type="color"
+value="#7c3aed">
+
+<span>
+اللون الأساسي
+</span>
+
+</div>
+
+<div class="color-box">
+
+<input
+id="colorSecondary"
+type="color"
+value="#a855f7">
+
+<span>
+اللون الثانوي
+</span>
+
+</div>
+
+<div class="color-box">
+
+<input
+id="colorBackground"
+type="color"
+value="#07070b">
+
+<span>
+الخلفية
+</span>
+
+</div>
+
+<div class="color-box">
+
+<input
+id="colorCard"
+type="color"
+value="#101017">
+
+<span>
+البطاقات
+</span>
+
+</div>
+
+</div>
+
+<br>
+
+<button
+class="btn btn-primary"
+onclick="saveDesign()">
+
+حفظ التصميم
+
+</button>
+
+</div>
+
+</div>
+
+
+<div class="panel">
+
+<div class="panel-head">
+
+<div>
+
+<div class="panel-title">
+أماكن العناصر
+</div>
+
+<div class="panel-description">
+نظام التحكم في ترتيب عناصر الموقع
+</div>
+
+</div>
+
+</div>
+
+<div class="panel-body">
+
+<div class="setting">
+
+<div>
+
+<div class="setting-title">
+إظهار البحث في الهيدر
+</div>
+
+<div class="setting-description">
+التحكم في ظهور مربع البحث
+</div>
+
+</div>
+
+<label class="switch">
+
+<input
+id="showSearch"
+type="checkbox"
+checked>
+
+<span class="slider">
+</span>
+
+</label>
+
+</div>
+
+
+<div class="setting">
+
+<div>
+
+<div class="setting-title">
+إظهار قسم الفيديوهات
+</div>
+
+<div class="setting-description">
+إظهار أو إخفاء قسم الفيديوهات
+</div>
+
+</div>
+
+<label class="switch">
+
+<input
+id="showVideos"
+type="checkbox"
+checked>
+
+<span class="slider">
+</span>
+
+</label>
+
+</div>
+
+
+<div class="setting">
+
+<div>
+
+<div class="setting-title">
+إظهار قسم الصور
+</div>
+
+<div class="setting-description">
+إظهار أو إخفاء قسم الصور
+</div>
+
+</div>
+
+<label class="switch">
+
+<input
+id="showImages"
+type="checkbox"
+checked>
+
+<span class="slider">
+</span>
+
+</label>
+
+</div>
+
+
+<div class="setting">
+
+<div>
+
+<div class="setting-title">
+إظهار منشورات المجتمع
+</div>
+
+<div class="setting-description">
+التحكم في قسم المجتمع
+</div>
+
+</div>
+
+<label class="switch">
+
+<input
+id="showCommunity"
+type="checkbox"
+checked>
+
+<span class="slider">
+</span>
+
+</label>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- SETTINGS -->
+
+<section
+class="admin-page"
+id="page-settings">
+
+<div class="panel">
+
+<div class="panel-head">
+
+<div>
+
+<div class="panel-title">
+إعدادات الموقع
+</div>
+
+<div class="panel-description">
+إعدادات عامة للمنصة
+</div>
+
+</div>
+
+</div>
+
+<div class="panel-body">
+
+<div class="setting">
+
+<div>
+
+<div class="setting-title">
+السماح بالتسجيل
+</div>
+
+<div class="setting-description">
+يمكن للمستخدمين إنشاء حسابات جديدة
+</div>
+
+</div>
+
+<label class="switch">
+
+<input
+id="allowRegister"
+type="checkbox"
+checked>
+
+<span class="slider">
+</span>
+
+</label>
+
+</div>
+
+
+<div class="setting">
+
+<div>
+
+<div class="setting-title">
+السماح بالتعليقات
+</div>
+
+<div class="setting-description">
+المستخدمون يستطيعون كتابة تعليقات
+</div>
+
+</div>
+
+<label class="switch">
+
+<input
+id="allowComments"
+type="checkbox"
+checked>
+
+<span class="slider">
+</span>
+
+</label>
+
+</div>
+
+
+<div class="setting">
+
+<div>
+
+<div class="setting-title">
+السماح بالإعجابات
+</div>
+
+<div class="setting-description">
+المستخدمون يستطيعون الإعجاب
+</div>
+
+</div>
+
+<label class="switch">
+
+<input
+id="allowLikes"
+type="checkbox"
+checked>
+
+<span class="slider">
+</span>
+
+</label>
+
+</div>
+
+
+<div class="setting">
+
+<div>
+
+<div class="setting-title">
+وضع الصيانة
+</div>
+
+<div class="setting-description">
+إيقاف الموقع مؤقتاً للصيانة
+</div>
+
+</div>
+
+<label class="switch">
+
+<input
+id="maintenanceMode"
+type="checkbox">
+
+<span class="slider">
+</span>
+
+</label>
+
+</div>
+
+
+<br>
+
+<button
+class="btn btn-primary"
+onclick="saveSettings()">
+
+حفظ الإعدادات
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+</section>
+
+
+<!-- POST MODAL -->
+
+<div
+class="modal"
+id="postModal"
+onclick="closeModalOutside(event,'postModal')">
+
+<div
+class="modal-box"
+onclick="event.stopPropagation()">
+
+<div class="modal-head">
+
+<strong>
+إضافة / تعديل منشور
+</strong>
+
+<button
+class="close"
+onclick="closePostModal()">
+×
+</button>
+
+</div>
+
+<form id="postForm">
+
+<input
+id="editingPostId"
+type="hidden">
+
+<div class="form-grid">
+
+<div class="form-group">
+
+<label>
+عنوان المنشور
+</label>
+
+<input
+id="postTitle"
+required
+placeholder="عنوان المنشور">
+
+</div>
+
+<div class="form-group">
+
+<label>
+النوع
+</label>
+
+<select id="postType">
+
+<option value="video">
+فيديو
+</option>
+
+<option value="image">
+صورة
+</option>
+
+</select>
+
+</div>
+
+<div class="form-group form-full">
+
+<label>
+رابط الوسائط
+</label>
+
+<input
+id="postUrl"
+type="url"
+required
+placeholder="https://...">
+
+</div>
+
+<div class="form-group">
+
+<label>
+عدد المشاهدات
+</label>
+
+<input
+id="postViews"
+type="number"
+min="0"
+value="0">
+
+</div>
+
+<div class="form-group">
+
+<label>
+عدد الإعجابات
+</label>
+
+<input
+id="postLikes"
+type="number"
+min="0"
+value="0">
+
+</div>
+
+</div>
+
+<br>
+
+<button
+class="btn btn-primary"
+type="submit">
+
+حفظ المنشور
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+
+<!-- COUPON MODAL -->
+
+<div
+class="modal"
+id="couponModal"
+onclick="closeModalOutside(event,'couponModal')">
+
+<div
+class="modal-box"
+onclick="event.stopPropagation()">
+
+<div class="modal-head">
+
+<strong>
+إضافة قسيمة
+</strong>
+
+<button
+class="close"
+onclick="closeCouponModal()">
+×
+</button>
+
+</div>
+
+<form id="couponForm">
+
+<div class="form-grid">
+
+<div class="form-group">
+
+<label>
+كود القسيمة
+</label>
+
+<input
+id="couponCode"
+required
+maxlength="40"
+placeholder="ANIME2026">
+
+</div>
+
+<div class="form-group">
+
+<label>
+قيمة القسيمة
+</label>
+
+<input
+id="couponValue"
+required
+placeholder="مثال: 50">
+
+</div>
+
+</div>
+
+<br>
+
+<button
+class="btn btn-primary"
+type="submit">
+
+إضافة القسيمة
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+
+<script>
+
+"use strict";
+
+/*
+==================================================
+ANIME WORLD ADMIN CORE
+==================================================
+
+هذه النسخة هي واجهة Admin Front-End.
+
+الأمان الحقيقي سيتم في Backend لاحقاً.
+
+لا يتم وضع:
+- كلمات مرور حقيقية
+- مفاتيح سرية
+- بيانات قاعدة البيانات
+داخل GitHub Front-End.
+
+==================================================
+*/
+
+
+const ADMIN_CONFIG = {
+
+ownerId:"111111111",
+
+authenticated:false
+
+};
+
+
+const ADMIN_STATE = {
+
+posts:JSON.parse(
+localStorage.getItem(
+"animeAdminPosts"
+) || "[]"
+),
+
+coupons:JSON.parse(
+localStorage.getItem(
+"animeAdminCoupons"
+) || "[]"
+),
+
+settings:JSON.parse(
+localStorage.getItem(
+"animeAdminSettings"
+) || "{}"
+),
+
+design:JSON.parse(
+localStorage.getItem(
+"animeAdminDesign"
+) || "{}"
+)
+
+};
+
+
+/* ============================================= */
+/* HELPERS */
+/* ============================================= */
+
+function $(id){
+
+return document.getElementById(id);
+
+}
+
+
+function saveState(){
+
+localStorage.setItem(
+"animeAdminPosts",
+JSON.stringify(
+ADMIN_STATE.posts
+)
+);
+
+localStorage.setItem(
+"animeAdminCoupons",
+JSON.stringify(
+ADMIN_STATE.coupons
+)
+);
+
+localStorage.setItem(
+"animeAdminSettings",
+JSON.stringify(
+ADMIN_STATE.settings
+)
+);
+
+localStorage.setItem(
+"animeAdminDesign",
+JSON.stringify(
+ADMIN_STATE.design
+)
+);
+
+}
+
+
+function showAdminMessage(message){
+
+alert(message);
+
+}
+
+
+/* ============================================= */
+/* LOGIN */
+/* ============================================= */
+
+$("adminLoginForm")
+.addEventListener(
+"submit",
+function(event){
+
+event.preventDefault();
+
+const id=
+$("adminId")
+.value
+.trim();
+
+const password=
+$("adminPassword")
+.value;
+
+if(id!==ADMIN_CONFIG.ownerId){
+
+$("loginError")
+textContent=
+"معرّف المشرف غير صحيح.";
+
+return;
+
+}
+
+/*
+لا نتحقق من كلمة مرور حقيقية هنا.
+
+في النسخة النهائية:
+المتصفح يرسل بيانات الدخول إلى الخادم،
+والخادم هو الذي يتحقق منها ويُصدر جلسة آمنة.
+*/
+
+if(!password){
+
+$("loginError")
+.textContent=
+"أدخل كلمة المرور.";
+
+return;
+
+}
+
+ADMIN_CONFIG.authenticated=true;
+
+sessionStorage.setItem(
+"adminSession",
+"demo"
+);
+
+$("adminLogin")
+.style.display="none";
+
+$("adminApp")
+.classList.add("active");
+
+initializeAdmin();
+
+}
+);
+
+
+/* ============================================= */
+/* SESSION */
+/* ============================================= */
+
+function checkSession(){
+
+if(
+sessionStorage.getItem(
+"adminSession"
+)==="demo"
+){
+
+ADMIN_CONFIG.authenticated=true;
+
+$("adminLogin")
+.style.display="none";
+
+$("adminApp")
+.classList.add("active");
+
+initializeAdmin();
+
+}
+
+}
+
+
+/* ============================================= */
+/* LOGOUT */
+/* ============================================= */
+
+function adminLogout(){
+
+sessionStorage.removeItem(
+"adminSession"
+);
+
+ADMIN_CONFIG.authenticated=false;
+
+location.reload();
+
+}
+
+
+/* ============================================= */
+/* NAVIGATION */
+/* ============================================= */
+
+const menuItems=
+document.querySelectorAll(
+".menu-item[data-page]"
+);
+
+
+menuItems.forEach(
+button=>{
+
+button.addEventListener(
+"click",
+()=>{
+
+menuItems.forEach(
+item=>{
+item.classList.remove(
+"active"
+);
+}
+);
+
+button.classList.add(
+"active"
+);
+
+const page=
+button.dataset.page;
+
+document
+.querySelectorAll(
+".admin-page"
+)
+.forEach(
+section=>{
+section.classList.remove(
+"active"
+);
+}
+);
+
+const target=
+$("page-"+page);
+
+if(target){
+
+target.classList.add(
+"active"
+);
+
+}
+
+const titles={
+
+dashboard:"لوحة التحكم",
+
+posts:"إدارة المنشورات",
+
+users:"المستخدمون",
+
+media:"الفيديوهات والصور",
+
+coupons:"القسايم",
+
+statistics:"الإحصائيات",
+
+design:"تصميم الموقع",
+
+settings:"إعدادات الموقع"
+
+};
+
+$("pageTitle")
+.textContent=
+titles[page] || "الإدارة";
+
+if(page==="posts"){
+
+renderPosts();
+
+}
+
+if(page==="coupons"){
+
+renderCoupons();
+
+}
+
+if(page==="statistics"){
+
+renderStatistics();
+
+}
+
+}
+);
+
+}
+);
+
+
+/* ============================================= */
+/* POSTS */
+/* ============================================= */
+
+function createPostId(){
+
+return Date.now().toString();
+
+}
+
+
+function openPostModal(
+post=null
+){
+
+$("postModal")
+.classList.add("open");
+
+if(post){
+
+$("editingPostId")
+.value=post.id;
+
+$("postTitle")
+.value=post.title;
+
+$("postType")
+.value=post.type;
+
+$("postUrl")
+.value=post.url;
+
+$("postViews")
+.value=post.views;
+
+$("postLikes")
+.value=post.likes;
+
+}else{
+
+$("postForm").reset();
+
+$("editingPostId")
+.value="";
+
+$("postViews")
+.value=0;
+
+$("postLikes")
+.value=0;
+
+}
+
+}
+
+
+function closePostModal(){
+
+$("postModal")
+.classList.remove(
+"open"
+);
+
+}
+
+
+$("postForm")
+.addEventListener(
+"submit",
+function(event){
+
+event.preventDefault();
+
+const id=
+$("editingPostId")
+.value;
+
+const post={
+
+id:id || createPostId(),
+
+title:
+$("postTitle")
+.value
+.trim(),
+
+type:
+$("postType")
+.value,
+
+url:
+$("postUrl")
+.value
+.trim(),
+
+views:
+Number(
+$("postViews")
+.value
+) || 0,
+
+likes:
+Number(
+$("postLikes")
+.value
+) || 0,
+
+status:"published",
+
+createdAt:
+Date.now()
+
+};
+
+if(id){
+
+const index=
+ADMIN_STATE.posts
+.findIndex(
+item=>item.id===id
+);
+
+if(index!==-1){
+
+ADMIN_STATE.posts[index]={
+...ADMIN_STATE.posts[index],
+...post
+};
+
+}
+
+}else{
+
+ADMIN_STATE.posts.unshift(
+post
+);
+
+}
+
+saveState();
+
+closePostModal();
+
+renderAll();
+
+showAdminMessage(
+"تم حفظ المنشور."
+);
+
+}
+);
+
+
+/* ============================================= */
+/* RENDER POSTS */
+/* ============================================= */
+
+function renderPosts(){
+
+const table=
+$("postsTable");
+
+const dashboard=
+$("dashboardPosts");
+
+table.innerHTML="";
+
+dashboard.innerHTML="";
+
+ADMIN_STATE.posts
+.slice(0,50)
+.forEach(
+post=>{
+
+const row=
+createPostRow(post);
+
+table.appendChild(row);
+
+}
+);
+
+ADMIN_STATE.posts
+.slice(0,8)
+.forEach(
+post=>{
+
+const row=
+createPostRow(post);
+
+dashboard.appendChild(row);
+
+}
+);
+
+}
+
+
+function createPostRow(post){
+
+const tr=
+document.createElement(
+"tr"
+);
+
+const titleCell=
+document.createElement(
+"td"
+);
+
+const mini=
+document.createElement(
+"div"
+);
+
+mini.className="post-mini";
+
+const img=
+document.createElement(
+"img"
+);
+
+img.className="post-image";
+
+img.src=
+post.type==="image"
+?post.url
+:"https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=200&q=70";
+
+img.onerror=function(){
+
+this.style.display="none";
+
+};
+
+const title=
+document.createElement(
+"span"
+);
+
+title.textContent=
+post.title;
+
+mini.appendChild(img);
+
+mini.appendChild(title);
+
+titleCell.appendChild(mini);
+
+
+const type=
+document.createElement(
+"td"
+);
+
+type.innerHTML=
+post.type==="video"
+?'<span class="badge badge-purple">فيديو</span>'
+:'<span class="badge badge-green">صورة</span>';
+
+
+const views=
+document.createElement(
+"td"
+);
+
+views.textContent=
+formatNumber(post.views);
+
+
+const likes=
+document.createElement(
+"td"
+);
+
+likes.textContent=
+formatNumber(post.likes);
+
+
+const status=
+document.createElement(
+"td"
+);
+
+status.innerHTML=
+'<span class="badge badge-green">منشور</span>';
+
+
+const actions=
+document.createElement(
+"td"
+);
+
+actions.className="actions";
+
+
+const edit=
+document.createElement(
+"button"
+);
+
+edit.className=
+"btn btn-secondary";
+
+edit.textContent=
+"تعديل";
+
+edit.onclick=
+()=>openPostModal(post);
+
+
+const stats=
+document.createElement(
+"button"
+);
+
+stats.className=
+"btn btn-primary";
+
+stats.textContent=
+"الإحصائيات";
+
+stats.onclick=
+()=>editPostStats(post);
+
+
+const del=
+document.createElement(
+"button"
+);
+
+del.className=
+"btn btn-danger";
+
+del.textContent=
+"حذف";
+
+del.onclick=
+()=>deletePost(post.id);
+
+
+actions.appendChild(edit);
+
+actions.appendChild(stats);
+
+actions.appendChild(del);
+
+
+tr.appendChild(titleCell);
+
+tr.appendChild(type);
+
+tr.appendChild(views);
+
+tr.appendChild(likes);
+
+tr.appendChild(status);
+
+tr.appendChild(actions);
+
+return tr;
+
+}
+
+
+/* ============================================= */
+/* DELETE POST */
+/* ============================================= */
+
+function deletePost(id){
+
+const post=
+ADMIN_STATE.posts
+.find(
+item=>item.id===id
+);
+
+if(!post){
+
+return;
+
+}
+
+const confirmed=
+confirm(
+`هل تريد حذف "${post.title}"؟`
+);
+
+if(!confirmed){
+
+return;
+
+}
+
+ADMIN_STATE.posts=
+ADMIN_STATE.posts.filter(
+item=>item.id!==id
+);
+
+saveState();
+
+renderAll();
+
+showAdminMessage(
+"تم حذف المنشور."
+);
+
+}
+
+
+/* ============================================= */
+/* EDIT STATISTICS */
+/* ============================================= */
+
+function editPostStats(post){
+
+const views=
+prompt(
+"عدد المشاهدات الجديد:",
+post.views
+);
+
+if(views===null){
+
+return;
+
+}
+
+const likes=
+prompt(
+"عدد الإعجابات الجديد:",
+post.likes
+);
+
+if(likes===null){
+
+return;
+
+}
+
+post.views=
+Math.max(
+0,
+Number(views)||0
+);
+
+post.likes=
+Math.max(
+0,
+Number(likes)||0
+);
+
+saveState();
+
+renderAll();
+
+showAdminMessage(
+"تم تحديث الإحصائيات."
+);
+
+}
+
+
+/* ============================================= */
+/* COUPONS */
+/* ============================================= */
+
+function openCouponModal(){
+
+$("couponForm")
+.reset();
+
+$("couponModal")
+.classList.add(
+"open"
+);
+
+}
+
+
+function closeCouponModal(){
+
+$("couponModal")
+.classList.remove(
+"open"
+);
+
+}
+
+
+$("couponForm")
+.addEventListener(
+"submit",
+function(event){
+
+event.preventDefault();
+
+const code=
+$("couponCode")
+.value
+.trim()
+.toUpperCase();
+
+const value=
+$("couponValue")
+.value
+.trim();
+
+if(!code || !value){
+
+return;
+
+}
+
+ADMIN_STATE.coupons.unshift({
+
+id:Date.now()
+.toString(),
+
+code:code,
+
+value:value,
+
+active:true,
+
+createdAt:Date.now()
+
+});
+
+saveState();
+
+closeCouponModal();
+
+renderCoupons();
+
+showAdminMessage(
+"تمت إضافة القسيمة."
+);
+
+}
+);
+
+
+/* ============================================= */
+/* RENDER COUPONS */
+/* ============================================= */
+
+function renderCoupons(){
+
+const container=
+$("couponList");
+
+container.innerHTML="";
+
+if(
+ADMIN_STATE.coupons.length===0
+){
+
+container.innerHTML=
+`
+<div style="
+text-align:center;
+padding:35px;
+color:#777;
+font-size:12px
+">
+لا توجد قسايم حالياً.
+</div>
+`;
+
+return;
+
+}
+
+ADMIN_STATE.coupons
+.forEach(
+coupon=>{
+
+const item=
+document.createElement(
+"div"
+);
+
+item.className="coupon";
+
+item.innerHTML=`
+
+<div>
+<div class="coupon-code">
+${escapeHtml(coupon.code)}
+</div>
+<div style="
+font-size:9px;
+color:#777;
+margin-top:4px
+">
+${coupon.active?"فعالة":"متوقفة"}
+</div>
+</div>
+
+<div class="coupon-value">
+${escapeHtml(coupon.value)}
+</div>
+
+<div>
+<span class="badge ${
+coupon.active
+?"badge-green"
+:"badge-red"
+}">
+${
+coupon.active
+?"فعالة"
+:"متوقفة"
+}
+</span>
+</div>
+
+<div class="actions">
+
+<button
+class="btn btn-secondary"
+onclick="toggleCoupon('${coupon.id}')">
+تبديل
+</button>
+
+<button
+class="btn btn-danger"
+onclick="deleteCoupon('${coupon.id}')">
+حذف
+</button>
+
+</div>
+
+`;
+
+container.appendChild(item);
+
+}
+);
+
+}
+
+
+function toggleCoupon(id){
+
+const coupon=
+ADMIN_STATE.coupons
+.find(
+item=>item.id===id
+);
+
+if(!coupon){
+
+return;
+
+}
+
+coupon.active=
+!coupon.active;
+
+saveState();
+
+renderCoupons();
+
+}
+
+
+function deleteCoupon(id){
+
+const confirmed=
+confirm(
+"هل تريد حذف هذه القسيمة؟"
+);
+
+if(!confirmed){
+
+return;
+
+}
+
+ADMIN_STATE.coupons=
+ADMIN_STATE.coupons
+.filter(
+item=>item.id!==id
+);
+
+saveState();
+
+renderCoupons();
+
+}
+
+
+/* ============================================= */
+/* STATISTICS */
+/* ============================================= */
+
+function renderStatistics(){
+
+const container=
+$("statisticsPosts");
+
+container.innerHTML="";
+
+ADMIN_STATE.posts
+.forEach(
+post=>{
+
+const row=
+document.createElement(
+"div"
+);
+
+row.style.cssText=
+`
+display:grid;
+grid-template-columns:1fr 150px 150px auto;
+gap:10px;
+align-items:center;
+padding:12px 0;
+border-bottom:1px solid var(--border);
+`;
+
+row.innerHTML=`
+
+<div>
+<strong style="
+font-size:11px
+">
+${escapeHtml(post.title)}
+</strong>
+</div>
+
+<input
+class="stat-view-input"
+type="number"
+min="0"
+value="${post.views}"
+style="
+height:38px;
+border:1px solid var(--border);
+border-radius:9px;
+background:rgba(255,255,255,.04);
+color:#fff;
+padding:0 9px
+">
+
+<input
+class="stat-like-input"
+type="number"
+min="0"
+value="${post.likes}"
+style="
+height:38px;
+border:1px solid var(--border);
+border-radius:9px;
+background:rgba(255,255,255,.04);
+color:#fff;
+padding:0 9px
+">
+
+<button
+class="btn btn-primary">
+حفظ
+</button>
+
+`;
+
+const saveButton=
+row.querySelector(
+"button"
+);
+
+const viewsInput=
+row.querySelector(
+".stat-view-input"
+);
+
+const likesInput=
+row.querySelector(
+".stat-like-input"
+);
+
+saveButton.onclick=
+()=>{
+
+post.views=
+Math.max(
+0,
+Number(
+viewsInput.value
+)||0
+);
+
+post.likes=
+Math.max(
+0,
+Number(
+likesInput.value
+)||0
+);
+
+saveState();
+
+renderAll();
+
+showAdminMessage(
+"تم حفظ الإحصائيات."
+);
+
+};
+
+container.appendChild(row);
+
+}
+);
+
+}
+
+
+/* ============================================= */
+/* GLOBAL STATISTICS */
+/* ============================================= */
+
+function saveStatistics(){
+
+const views=
+Math.max(
+0,
+Number(
+$("globalViews")
+.value
+)||0
+);
+
+const likes=
+Math.max(
+0,
+Number(
+$("globalLikes")
+.value
+)||0
+);
+
+ADMIN_STATE.globalViews=
+views;
+
+ADMIN_STATE.globalLikes=
+likes;
+
+saveState();
+
+showAdminMessage(
+"تم حفظ الإحصائيات العامة."
+);
+
+}
+
+
+/* ============================================= */
+/* DESIGN */
+/* ============================================= */
+
+function saveDesign(){
+
+ADMIN_STATE.design={
+
+primary:
+$("colorPrimary")
+.value,
+
+secondary:
+$("colorSecondary")
+.value,
+
+background:
+$("colorBackground")
+.value,
+
+card:
+$("colorCard")
+.value,
+
+showSearch:
+$("showSearch")
+.checked,
+
+showVideos:
+$("showVideos")
+.checked,
+
+showImages:
+$("showImages")
+.checked,
+
+showCommunity:
+$("showCommunity")
+.checked
+
+};
+
+saveState();
+
+showAdminMessage(
+"تم حفظ إعدادات التصميم."
+);
+
+}
+
+
+/* ============================================= */
+/* MEDIA */
+/* ============================================= */
+
+function saveMedia(){
+
+const type=
+$("mediaType")
+.value;
+
+const url=
+$("mediaUrl")
+.value
+.trim();
+
+const description=
+$("mediaDescription")
+.value
+.trim();
+
+if(!url){
+
+showAdminMessage(
+"أدخل رابط الملف."
+);
+
+return;
+
+}
+
+ADMIN_STATE.posts.unshift({
+
+id:createPostId(),
+
+title:
+description ||
+(type==="video"
+?"فيديو جديد"
+:"صورة جديدة"),
+
+type:type,
+
+url:url,
+
+views:0,
+
+likes:0,
+
+status:"published",
+
+createdAt:Date.now()
+
+});
+
+saveState();
+
+$("mediaUrl")
+.value="";
+
+$("mediaDescription")
+.value="";
+
+renderAll();
+
+showAdminMessage(
+"تمت إضافة المحتوى."
+);
+
+}
+
+
+/* ============================================= */
+/* SETTINGS */
+/* ============================================= */
+
+function saveSettings(){
+
+ADMIN_STATE.settings={
+
+allowRegister:
+$("allowRegister")
+.checked,
+
+allowComments:
+$("allowComments")
+.checked,
+
+allowLikes:
+$("allowLikes")
+.checked,
+
+maintenanceMode:
+$("maintenanceMode")
+.checked
+
+};
+
+saveState();
+
+showAdminMessage(
+"تم حفظ إعدادات الموقع."
+);
+
+}
+
+
+/* ============================================= */
+/* LOAD SETTINGS */
+/* ============================================= */
+
+function loadSettings(){
+
+const settings=
+ADMIN_STATE.settings;
+
+if(
+typeof settings.allowRegister
+==="boolean"
+){
+
+$("allowRegister")
+.checked=
+settings.allowRegister;
+
+}
+
+if(
+typeof settings.allowComments
+==="boolean"
+){
+
+$("allowComments")
+.checked=
+settings.allowComments;
+
+}
+
+if(
+typeof settings.allowLikes
+==="boolean"
+){
+
+$("allowLikes")
+.checked=
+settings.allowLikes;
+
+}
+
+if(
+typeof settings.maintenanceMode
+==="boolean"
+){
+
+$("maintenanceMode")
+.checked=
+settings.maintenanceMode;
+
+}
+
+const design=
+ADMIN_STATE.design;
+
+if(design.primary){
+
+$("colorPrimary")
+.value=
+design.primary;
+
+}
+
+if(design.secondary){
+
+$("colorSecondary")
+.value=
+design.secondary;
+
+}
+
+if(design.background){
+
+$("colorBackground")
+.value=
+design.background;
+
+}
+
+if(design.card){
+
+$("colorCard")
+.value=
+design.card;
+
+}
+
+}
+
+
+/* ============================================= */
+/* DASHBOARD STATS */
+/* ============================================= */
+
+function updateDashboardStats(){
+
+const users=
+localStorage.getItem(
+"animeUsersCount"
+) || 1;
+
+const posts=
+ADMIN_STATE.posts.length;
+
+const views=
+ADMIN_STATE.posts
+.reduce(
+(sum,post)=>
+sum+
+Number(post.views||0),
+0
+);
+
+const likes=
+ADMIN_STATE.posts
+.reduce(
+(sum,post)=>
+sum+
+Number(post.likes||0),
+0
+);
+
+$("statUsers")
+.textContent=
+formatNumber(
+Number(users)
+);
+
+$("statPosts")
+.textContent=
+formatNumber(posts);
+
+$("statViews")
+.textContent=
+formatNumber(views);
+
+$("statLikes")
+.textContent=
+formatNumber(likes);
+
+}
+
+
+/* ============================================= */
+/* INITIAL DATA */
+/* ============================================= */
+
+function createDemoData(){
+
+if(
+ADMIN_STATE.posts.length>0
+){
+
+return;
+
+}
+
+ADMIN_STATE.posts=[
+
+{
+
+id:"1",
+
+title:
+"أفضل لحظة قتالية في الأنمي 🔥",
+
+type:"video",
+
+url:
+"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+
+views:125000,
+
+likes:18400,
+
+status:"published",
+
+createdAt:Date.now()
+
+},
+
+{
+
+id:"2",
+
+title:
+"عالم خيالي لا يصدق ✨",
+
+type:"video",
+
+url:
+"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+
+views:98000,
+
+likes:14700,
+
+status:"published",
+
+createdAt:Date.now()
+
+},
+
+{
+
+id:"3",
+
+title:
+"خلفية أنمي فخمة",
+
+type:"image",
+
+url:
+"https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=900&q=80",
+
+views:42000,
+
+likes:8300,
+
+status:"published",
+
+createdAt:Date.now()
+
+}
+
+];
+
+ADMIN_STATE.coupons=[
+
+{
+
+id:"1",
+
+code:"ANIME2026",
+
+value:"50",
+
+active:true,
+
+createdAt:Date.now()
+
+}
+
+];
+
+saveState();
+
+}
+
+
+/* ============================================= */
+/* RENDER ALL */
+/* ============================================= */
+
+function renderAll(){
+
+renderPosts();
+
+renderCoupons();
+
+renderStatistics();
+
+updateDashboardStats();
+
+}
+
+
+/* ============================================= */
+/* UTILITIES */
+/* ============================================= */
+
+function formatNumber(number){
+
+number=
+Number(number)||0;
+
+if(number>=1000000){
+
+return(
+(number/1000000)
+.toFixed(
+number>=10000000
+?0
+:1
+)+"M"
+);
+
+}
+
+if(number>=1000){
+
+return(
+(number/1000)
+.toFixed(
+number>=100000
+?0
+:1
+)+"K"
+);
+
+}
+
+return number.toString();
+
+}
+
+
+function escapeHtml(value){
+
+return String(value)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+
+/* ============================================= */
+/* MODAL OUTSIDE */
+/* ============================================= */
+
+function closeModalOutside(
+event,
+id
+){
+
+if(
+event.target.id===id
+){
+
+$(id)
+.classList.remove(
+"open"
+);
+
+}
+
+}
+
+
+/* ============================================= */
+/* INITIALIZE */
+/* ============================================= */
+
+function initializeAdmin(){
+
+createDemoData();
+
+loadSettings();
+
+renderAll();
+
+}
+
+
+checkSession();
+
+</script>
+
+</body>
+</html>
