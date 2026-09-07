@@ -3,18 +3,34 @@ const jwt = require("jsonwebtoken");
 
 const OWNER_ID = 111111111;
 
+/* =========================================
+   JWT SECRET
+========================================= */
+
 function getSecret() {
-    return (
-        process.env.JWT_SECRET ||
-        "CHANGE_THIS_SECRET_IN_ENV"
-    );
+
+    const secret =
+        process.env.JWT_SECRET;
+
+    if (
+        typeof secret !== "string" ||
+        secret.length < 32
+    ) {
+        throw new Error(
+            "JWT_SECRET must be configured in .env and contain at least 32 characters."
+        );
+    }
+
+    return secret;
 }
+
 
 /* =========================================
    PASSWORD
 ========================================= */
 
 async function hashPassword(password) {
+
     if (
         typeof password !== "string" ||
         password.length < 8
@@ -30,10 +46,12 @@ async function hashPassword(password) {
     );
 }
 
+
 async function comparePassword(
     password,
     passwordHash
 ) {
+
     if (
         typeof password !== "string" ||
         typeof passwordHash !== "string"
@@ -54,16 +72,33 @@ async function comparePassword(
 
 function createAuthToken(user) {
 
+    if (!user || !user.id) {
+        throw new Error(
+            "Invalid user."
+        );
+    }
+
     return jwt.sign(
+
         {
-            id: user.id,
-            username: user.username,
-            role: user.role
+            id:
+                Number(user.id),
+
+            username:
+                user.username,
+
+            role:
+                user.role
         },
+
         getSecret(),
+
         {
-            expiresIn: "7d"
+            expiresIn: "7d",
+            issuer: "anime-world",
+            audience: "anime-world-users"
         }
+
     );
 }
 
@@ -80,8 +115,19 @@ function verifyAuthToken(token) {
     try {
 
         return jwt.verify(
+
             token,
-            getSecret()
+
+            getSecret(),
+
+            {
+                issuer:
+                    "anime-world",
+
+                audience:
+                    "anime-world-users"
+            }
+
         );
 
     } catch {
@@ -102,8 +148,15 @@ function isOwner(user) {
     }
 
     return (
-        Number(user.id) === OWNER_ID &&
-        user.role === "owner"
+
+        Number(user.id) ===
+        OWNER_ID
+
+        &&
+
+        user.role ===
+        "owner"
+
     );
 }
 
@@ -115,39 +168,59 @@ function isAdmin(user) {
     }
 
     return (
-        user.role === "admin" ||
+
+        user.role ===
+        "admin"
+
+        ||
+
         isOwner(user)
+
     );
 }
 
 
 /* =========================================
-   AUTHORIZATION
+   PERMISSIONS
 ========================================= */
 
 function canManagePosts(user) {
+
     return isAdmin(user);
+
 }
+
 
 function canManageUsers(user) {
+
     return isOwner(user);
+
 }
+
 
 function canManageSettings(user) {
+
     return isOwner(user);
+
 }
+
 
 function canManageCoupons(user) {
+
     return isOwner(user);
+
 }
 
+
 function canViewAdminPanel(user) {
+
     return isOwner(user);
+
 }
 
 
 /* =========================================
-   REQUEST TOKEN
+   TOKEN FROM REQUEST
 ========================================= */
 
 function getBearerToken(req) {
@@ -174,12 +247,21 @@ function getBearerToken(req) {
         return null;
     }
 
-    return header.substring(7).trim();
+    const token =
+        header
+            .substring(7)
+            .trim();
+
+    if (!token) {
+        return null;
+    }
+
+    return token;
 }
 
 
 /* =========================================
-   MIDDLEWARE
+   AUTHENTICATION MIDDLEWARE
 ========================================= */
 
 function authenticate(
@@ -200,29 +282,45 @@ function authenticate(
             return res
                 .status(401)
                 .json({
-                    success: false,
+
+                    success:
+                        false,
+
                     message:
                         "Authentication required."
+
                 });
+
         }
 
+
         const payload =
-            verifyAuthToken(token);
+            verifyAuthToken(
+                token
+            );
 
         if (!payload) {
 
             return res
                 .status(401)
                 .json({
-                    success: false,
+
+                    success:
+                        false,
+
                     message:
                         "Invalid or expired session."
+
                 });
+
         }
+
 
         const user =
             getUserById(
-                payload.id
+                Number(
+                    payload.id
+                )
             );
 
         if (!user) {
@@ -230,11 +328,17 @@ function authenticate(
             return res
                 .status(401)
                 .json({
-                    success: false,
+
+                    success:
+                        false,
+
                     message:
                         "User account not found."
+
                 });
+
         }
+
 
         if (
             Number(user.id) !==
@@ -244,31 +348,51 @@ function authenticate(
             return res
                 .status(401)
                 .json({
-                    success: false,
+
+                    success:
+                        false,
+
                     message:
                         "Session verification failed."
+
                 });
+
         }
 
+
         if (
-            !user.is_active
+            Number(
+                user.is_active
+            ) !== 1
         ) {
 
             return res
                 .status(403)
                 .json({
-                    success: false,
+
+                    success:
+                        false,
+
                     message:
                         "This account is disabled."
+
                 });
+
         }
 
-        req.user = user;
+
+        req.user =
+            user;
 
         next();
+
     };
 }
 
+
+/* =========================================
+   OWNER ONLY
+========================================= */
 
 function ownerOnly() {
 
@@ -287,16 +411,26 @@ function ownerOnly() {
             return res
                 .status(403)
                 .json({
-                    success: false,
+
+                    success:
+                        false,
+
                     message:
                         "Owner access required."
+
                 });
+
         }
 
         next();
+
     };
 }
 
+
+/* =========================================
+   ADMIN ONLY
+========================================= */
 
 function adminOnly() {
 
@@ -315,19 +449,25 @@ function adminOnly() {
             return res
                 .status(403)
                 .json({
-                    success: false,
+
+                    success:
+                        false,
+
                     message:
                         "Administrator access required."
+
                 });
+
         }
 
         next();
+
     };
 }
 
 
 /* =========================================
-   PUBLIC USER OBJECT
+   PUBLIC USER
 ========================================= */
 
 function publicUser(user) {
@@ -337,8 +477,9 @@ function publicUser(user) {
     }
 
     return {
+
         id:
-            user.id,
+            Number(user.id),
 
         username:
             user.username,
@@ -357,6 +498,7 @@ function publicUser(user) {
 
         created_at:
             user.created_at
+
     };
 }
 
