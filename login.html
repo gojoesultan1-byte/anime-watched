@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>تسجيل الدخول - Anime World</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family:
+                Arial,
+                Tahoma,
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #263b72 0%,
+                    #10162c 40%,
+                    #070a14 100%
+                );
+
+            color: #ffffff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+
+            margin: auto;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #5c7cff,
+                    #18244f
+                );
+
+            box-shadow:
+                0 0 35px
+                rgba(92,124,255,.45);
+
+            font-size: 34px;
+            font-weight: bold;
+        }
+
+        .logo h1 {
+            margin-top: 14px;
+
+            font-size: 29px;
+
+            letter-spacing: 1px;
+        }
+
+        .logo p {
+            margin-top: 7px;
+
+            color: #aeb8d6;
+
+            font-size: 14px;
+        }
+
+        .card {
+            width: 100%;
+
+            padding: 30px;
+
+            border-radius: 22px;
+
+            background:
+                rgba(15,20,40,.92);
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            box-shadow:
+                0 25px 70px
+                rgba(0,0,0,.45);
+
+            backdrop-filter:
+                blur(15px);
+        }
+
+        .card h2 {
+            text-align: center;
+
+            font-size: 24px;
+
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+
+            color: #929dbd;
+
+            font-size: 14px;
+
+            margin-bottom: 25px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 14px;
+
+            color: #dce2f4;
+        }
+
+        .input-box {
+            position: relative;
+        }
+
+        .input-box input {
+            width: 100%;
+
+            height: 52px;
+
+            border-radius: 13px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.1);
+
+            outline: none;
+
+            background:
+                rgba(255,255,255,.05);
+
+            color: #ffffff;
+
+            padding:
+                0 16px;
+
+            font-size: 15px;
+
+            transition: .2s;
+        }
+
+        .input-box input:focus {
+            border-color:
+                #5c7cff;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(92,124,255,.12);
+        }
+
+        .input-box input::placeholder {
+            color: #69738f;
+        }
+
+        .password-toggle {
+            position: absolute;
+
+            left: 14px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+            border: none;
+
+            background: transparent;
+
+            color: #9ca8c7;
+
+            cursor: pointer;
+
+            font-size: 13px;
+        }
+
+        .remember {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin:
+                5px 0 20px;
+
+            color: #9ca8c7;
+
+            font-size: 13px;
+        }
+
+        .remember input {
+            width: 16px;
+            height: 16px;
+        }
+
+        .login-btn {
+            width: 100%;
+
+            height: 54px;
+
+            border: none;
+
+            border-radius: 14px;
+
+            cursor: pointer;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #657fff,
+                    #4057db
+                );
+
+            box-shadow:
+                0 10px 30px
+                rgba(65,87,219,.25);
+
+            transition:
+                transform .2s,
+                opacity .2s;
+        }
+
+        .login-btn:hover {
+            transform:
+                translateY(-2px);
+        }
+
+        .login-btn:disabled {
+            opacity: .6;
+
+            cursor: not-allowed;
+
+            transform: none;
+        }
+
+        .message {
+            display: none;
+
+            margin-bottom: 18px;
+
+            padding: 12px 14px;
+
+            border-radius: 12px;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+
+            text-align: center;
+        }
+
+        .message.error {
+            display: block;
+
+            background:
+                rgba(255,70,70,.1);
+
+            border:
+                1px solid
+                rgba(255,70,70,.25);
+
+            color: #ff9d9d;
+        }
+
+        .message.success {
+            display: block;
+
+            background:
+                rgba(60,220,130,.1);
+
+            border:
+                1px solid
+                rgba(60,220,130,.25);
+
+            color: #8df0b4;
+        }
+
+        .register {
+            text-align: center;
+
+            margin-top: 22px;
+
+            color: #858faa;
+
+            font-size: 14px;
+        }
+
+        .register a {
+            color: #7690ff;
+
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+        .register a:hover {
+            text-decoration: underline;
+        }
+
+        .back {
+            display: block;
+
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #707b9a;
+
+            text-decoration: none;
+
+            font-size: 13px;
+        }
+
+        .back:hover {
+            color: #aab5d4;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .loading.active {
+            display: inline-block;
+        }
+
+        .button-text.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+
+            border:
+                2px solid
+                rgba(255,255,255,.35);
+
+            border-top-color:
+                #ffffff;
+
+            border-radius: 50%;
+
+            animation:
+                spin .7s linear infinite;
+
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+
+            to {
+                transform:
+                    rotate(360deg);
+            }
+
+        }
+
+        @media (
+            max-width: 480px
+        ) {
+
+            body {
+                padding: 14px;
+            }
+
+            .card {
+                padding: 23px 18px;
+            }
+
+            .logo h1 {
+                font-size: 25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <main class="page">
+
+        <section class="logo">
+
+            <div class="logo-icon">
+                AW
+            </div>
+
+            <h1>
+                Anime World
+            </h1>
+
+            <p>
+                عالم الأنمي الخاص بك
+            </p>
+
+        </section>
+
+
+        <section class="card">
+
+            <h2>
+                تسجيل الدخول
+            </h2>
+
+            <p class="subtitle">
+                سجل دخولك لمتابعة عالم الأنمي
+            </p>
+
+
+            <div
+                id="message"
+                class="message"
+            ></div>
+
+
+            <form
+                id="loginForm"
+                autocomplete="on"
+            >
+
+                <div class="field">
+
+                    <label
+                        for="email"
+                    >
+                        البريد الإلكتروني
+                    </label>
+
+                    <div class="input-box">
+
+                        <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            placeholder="example@email.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label
+                        for="password"
+                    >
+                        كلمة المرور
+                    </label>
+
+                    <div class="input-box">
+
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="أدخل كلمة المرور"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="togglePassword"
+                        >
+                            إظهار
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <label class="remember">
+
+                    <input
+                        type="checkbox"
+                        id="remember"
+                    >
+
+                    <span>
+                        تذكرني على هذا الجهاز
+                    </span>
+
+                </label>
+
+
+                <button
+                    type="submit"
+                    class="login-btn"
+                    id="loginButton"
+                >
+
+                    <span
+                        class="button-text"
+                        id="buttonText"
+                    >
+                        تسجيل الدخول
+                    </span>
+
+                    <span
+                        class="loading"
+                        id="loading"
+                    >
+                        <span class="spinner"></span>
+                    </span>
+
+                </button>
+
+            </form>
+
+
+            <div class="register">
+
+                ليس لديك حساب؟
+
+                <a href="register.html">
+                    إنشاء حساب جديد
+                </a>
+
+            </div>
+
+
+            <a
+                href="index.html"
+                class="back"
+            >
+                ← العودة إلى الموقع
+            </a>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        const form =
+            document.getElementById(
+                "loginForm"
+            );
+
+
+        const emailInput =
+            document.getElementById(
+                "email"
+            );
+
+
+        const passwordInput =
+            document.getElementById(
+                "password"
+            );
+
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+        const loginButton =
+            document.getElementById(
+                "loginButton"
+            );
+
+
+        const buttonText =
+            document.getElementById(
+                "buttonText"
+            );
+
+
+        const loading =
+            document.getElementById(
+                "loading"
+            );
+
+
+        const remember =
+            document.getElementById(
+                "remember"
+            );
+
+
+        const togglePassword =
+            document.getElementById(
+                "togglePassword"
+            );
+
+
+        /*
+         * SHOW / HIDE PASSWORD
+         */
+
+        togglePassword.addEventListener(
+            "click",
+            () => {
+
+                const isPassword =
+                    passwordInput.type ===
+                    "password";
+
+                passwordInput.type =
+                    isPassword
+                        ? "text"
+                        : "password";
+
+                togglePassword.textContent =
+                    isPassword
+                        ? "إخفاء"
+                        : "إظهار";
+
+            }
+        );
+
+
+        /*
+         * MESSAGE
+         */
+
+        function showMessage(
+            text,
+            type
+        ) {
+
+            message.textContent =
+                text;
+
+            message.className =
+                "message " +
+                type;
+
+        }
+
+
+        function clearMessage() {
+
+            message.textContent =
+                "";
+
+            message.className =
+                "message";
+
+        }
+
+
+        /*
+         * LOADING
+         */
+
+        function setLoading(
+            state
+        ) {
+
+            loginButton.disabled =
+                state;
+
+            if (state) {
+
+                buttonText.classList
+                    .add("hidden");
+
+                loading.classList
+                    .add("active");
+
+            } else {
+
+                buttonText.classList
+                    .remove("hidden");
+
+                loading.classList
+                    .remove("active");
+
+            }
+
+        }
+
+
+        /*
+         * LOGIN
+         */
+
+        form.addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+                clearMessage();
+
+                const email =
+                    emailInput.value
+                        .trim()
+                        .toLowerCase();
+
+                const password =
+                    passwordInput.value;
+
+
+                if (!email) {
+
+                    showMessage(
+                        "اكتب البريد الإلكتروني.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (!password) {
+
+                    showMessage(
+                        "اكتب كلمة المرور.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                setLoading(true);
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/auth/login",
+                            {
+                                method:
+                                    "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify({
+                                        email,
+                                        password
+                                    })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.message ||
+                            "فشل تسجيل الدخول."
+                        );
+
+                    }
+
+
+                    /*
+                     * STORE SESSION
+                     */
+
+                    const storage =
+                        remember.checked
+                            ? localStorage
+                            : sessionStorage;
+
+
+                    storage.setItem(
+                        "anime_world_token",
+                        data.token
+                    );
+
+
+                    storage.setItem(
+                        "anime_world_user",
+                        JSON.stringify(
+                            data.user
+                        )
+                    );
+
+
+                    showMessage(
+                        "تم تسجيل الدخول بنجاح، جاري فتح الموقع...",
+                        "success"
+                    );
+
+
+                    /*
+                     * OWNER
+                     */
+
+                    if (
+                        Number(
+                            data.user.id
+                        ) === 111111111 &&
+                        data.user.role ===
+                            "owner"
+                    ) {
+
+                        setTimeout(
+                            () => {
+
+                                window.location.href =
+                                    "admin.html";
+
+                            },
+                            600
+                        );
+
+                        return;
+                    }
+
+
+                    /*
+                     * NORMAL USER
+                     */
+
+                    setTimeout(
+                        () => {
+
+                            window.location.href =
+                                "index.html";
+
+                        },
+                        600
+                    );
+
+
+                } catch (error) {
+
+                    showMessage(
+                        error.message ||
+                        "حدث خطأ أثناء تسجيل الدخول.",
+                        "error"
+                    );
+
+                    setLoading(false);
+
+                }
+
+            }
+        );
+
+
+        /*
+         * REMOVE OLD ERROR
+         */
+
+        emailInput.addEventListener(
+            "input",
+            clearMessage
+        );
+
+
+        passwordInput.addEventListener(
+            "input",
+            clearMessage
+        );
+
+
+        /*
+         * CHECK EXISTING SESSION
+         */
+
+        function checkExistingSession() {
+
+            const token =
+                localStorage.getItem(
+                    "anime_world_token"
+                ) ||
+                sessionStorage.getItem(
+                    "anime_world_token"
+                );
+
+
+            if (!token) {
+                return;
+            }
+
+
+            const userString =
+                localStorage.getItem(
+                    "anime_world_user"
+                ) ||
+                sessionStorage.getItem(
+                    "anime_world_user"
+                );
+
+
+            if (!userString) {
+                return;
+            }
+
+
+            try {
+
+                const user =
+                    JSON.parse(
+                        userString
+                    );
+
+
+                if (
+                    Number(user.id) ===
+                        111111111 &&
+                    user.role ===
+                        "owner"
+                ) {
+
+                    /*
+                     * Don't automatically
+                     * redirect the owner.
+                     *
+                     * This prevents
+                     * accidental loops
+                     * while developing.
+                     */
+
+                    return;
+                }
+
+            } catch {
+
+                localStorage.removeItem(
+                    "anime_world_user"
+                );
+
+                sessionStorage.removeItem(
+                    "anime_world_user"
+                );
+
+            }
+
+        }
+
+
+        checkExistingSession();
+
+    </script>
+
+</body>
+
+</html>
